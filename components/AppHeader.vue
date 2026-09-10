@@ -4,17 +4,18 @@ const mobileOpen = ref(false)
 
 const navItems = [
   { label: 'الرئيسية', to: '/' },
-  { label: 'المزايا', to: '/#features' },
+  { label: 'من نحن', to: '/#about' },
   { label: 'التخصصات', to: '/#specializations' },
   { label: 'المحافظات', to: '/#governorates' },
-  { label: 'طريقة العمل', to: '/#how-it-works' },
+  { label: 'للأطباء', to: '/#doctor-benefits' },
+  { label: 'الاشتراكات', to: '/subscriptions' },
   { label: 'الأطباء', to: '/doctors' },
   { label: 'الدعم', to: '/contact' },
 ]
 
 function isActive(item: { to: string }): boolean {
-  if (item.to === '/') return route.path === '/'
-  if (item.to.startsWith('/#')) return false
+  if (item.to === '/') return route.path === '/' && !route.hash
+  if (item.to.startsWith('/#')) return route.path === '/' && route.hash === item.to.slice(1)
   return route.path === item.to || route.path.startsWith(`${item.to}/`)
 }
 
@@ -22,7 +23,7 @@ function closeMobile() {
   mobileOpen.value = false
 }
 
-watch(route, closeMobile)
+watch(() => route.fullPath, closeMobile)
 
 function trackNavCta() {
   useAnalytics().trackAppDownloadClick()
@@ -30,7 +31,7 @@ function trackNavCta() {
 </script>
 
 <template>
-  <header class="app-header">
+  <header class="app-header" @keydown.esc="closeMobile">
     <div class="container app-header__inner">
       <BrandLogo :compact="true" />
 
@@ -56,6 +57,7 @@ function trackNavCta() {
           type="button"
           class="app-header__burger"
           :aria-expanded="mobileOpen"
+          aria-controls="mobile-navigation"
           aria-label="فتح القائمة"
           @click="mobileOpen = !mobileOpen"
         >
@@ -65,14 +67,15 @@ function trackNavCta() {
     </div>
 
     <Transition name="mobile-menu">
-      <div v-if="mobileOpen" class="app-header__mobile">
+      <div v-if="mobileOpen" id="mobile-navigation" class="app-header__mobile">
         <nav class="app-header__mobile-nav" aria-label="قائمة الجوال">
           <NuxtLink
             v-for="item in navItems"
             :key="item.to"
             :to="item.to"
             class="app-header__mobile-link"
-            :class="{ 'app-header__link--active': isActive(item) }"
+            :class="{ 'app-header__mobile-link--active': isActive(item) }"
+            @click="closeMobile"
           >
             {{ item.label }}
           </NuxtLink>
@@ -159,6 +162,8 @@ function trackNavCta() {
 }
 
 .app-header__mobile {
+  max-height: calc(100dvh - var(--header-height));
+  overflow-y: auto;
   position: absolute;
   inset-inline: 0;
   top: 100%;
@@ -201,7 +206,7 @@ function trackNavCta() {
   transform: translateY(-6px);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .app-header__nav {
     display: flex;
   }
@@ -211,6 +216,10 @@ function trackNavCta() {
   }
 
   .app-header__burger {
+    display: none;
+  }
+
+  .app-header__mobile {
     display: none;
   }
 }

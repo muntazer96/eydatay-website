@@ -12,7 +12,7 @@ useHead({
   link: [{ rel: 'canonical', href: siteUrl('/download') }],
 })
 
-const { androidPlayStoreUrl, iosAppStoreUrl, downloadUrl } = useAppLinks()
+const { androidPlayStoreUrl, iosAppStoreUrl } = useAppLinks()
 
 const stores = [
   {
@@ -26,7 +26,7 @@ const stores = [
     icon: 'android',
     title: 'Google Play',
     active: Boolean(androidPlayStoreUrl),
-    note: 'جرّب نسخة أندرويد مباشرة من زر التحميل أدناه',
+    note: 'قريباً على Google Play',
     url: androidPlayStoreUrl,
   },
 ]

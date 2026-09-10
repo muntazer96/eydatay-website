@@ -60,7 +60,7 @@ export function searchDoctors(params: SearchDoctorsParams = {}) {
   }
   if (params.sort) query.Sort = params.sort
   query.page = params.page || 1
-  query.pageSize = params.pageSize || 12
+  query.pageSize = params.pageSize || 8
   return apiGet<PageResult<PublicDoctorListDto>>('/Doctor/public', { query })
 }
 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import QRCode from 'qrcode'
 import { useAppLinks } from '~/composables/useAppLinks'
-import type { AppReleaseResponse } from '~/types'
 
 const props = withDefaults(
   defineProps<{
@@ -19,10 +18,6 @@ const { trackAppDownloadClick } = useAnalytics()
 
 const qrTarget = computed(() => androidPlayStoreUrl || downloadUrl(props.doctorId || undefined))
 const qrImg = ref('')
-const latestRelease = ref<AppReleaseResponse | null>(null)
-const showApkError = ref(false)
-
-const apkDownloadUrl = computed(() => `${apiBase()}/app-release/download`)
 
 async function generateQr() {
   if (import.meta.server) return
@@ -37,30 +32,8 @@ async function generateQr() {
   }
 }
 
-async function loadRelease() {
-  if (import.meta.server) return
-  try {
-    const res = await getLatestRelease()
-    latestRelease.value = res?.data ?? null
-  } catch {
-    latestRelease.value = null
-  }
-}
-
-function handleApkClick() {
-  showApkError.value = false
-  trackAppDownloadClick()
-  // The backend redirects to the bundled APK; if nothing is uploaded yet, show a hint.
-  try {
-    window.location.href = apkDownloadUrl.value
-  } catch {
-    showApkError.value = true
-  }
-}
-
 onMounted(() => {
   generateQr()
-  if (props.variant === 'page') loadRelease()
 })
 </script>
 
@@ -69,24 +42,7 @@ onMounted(() => {
     <div class="download-section__card">
       <div class="download-section__info">
         <span class="ey-logo-mark">
-          <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
-            <rect width="64" height="64" rx="16" fill="#13796b" />
-            <path
-              d="M32 48S14 38 14 24.8C14 18.8 18.4 15 23.4 15c3.7 0 6.8 2 8.6 5 1.8-3 4.9-5 8.6-5 5 0 9.4 3.8 9.4 9.8C50 38 32 48 32 48Z"
-              fill="none"
-              stroke="#fff"
-              stroke-width="4"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M18 31h8l3-7 6 15 4-8h7"
-              fill="none"
-              stroke="#fff"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <img src="/onColorsBG.png" alt="شعار عيادتي" width="80" height="80" loading="lazy" />
         </span>
 
         <div class="download-section__text">
@@ -105,7 +61,7 @@ onMounted(() => {
               @click="trackAppDownloadClick"
             >
               <BaseIcon name="google-play" :size="22" />
-              تحميل من Google Play
+              أندرويد · Google Play
             </a>
 
             <a
@@ -117,26 +73,20 @@ onMounted(() => {
               @click="trackAppDownloadClick"
             >
               <BaseIcon name="apple" :size="22" />
-              تحميل من App Store
+              iOS · App Store
             </a>
 
             <button
-              v-if="!androidPlayStoreUrl"
+              v-else
               type="button"
               class="btn btn--light"
-              @click="handleApkClick"
+              disabled
             >
-              <BaseIcon name="android" :size="22" />
-              تحميل نسخة أندرويد (APK)
+              <BaseIcon name="apple" :size="22" />
+              iOS · قريباً
             </button>
           </div>
 
-          <p v-if="variant === 'page' && showApkError" class="download-section__hint">
-            لم يتوفر ملف التطبيق بعد. سنخبرك عند إتاحته.
-          </p>
-          <p v-if="variant === 'page' && latestRelease && latestRelease.downloadCount > 0" class="download-section__hint">
-            الإصدار {{ latestRelease.versionName }} — {{ latestRelease.fileSize }} — {{ latestRelease.downloadCount }} تحميل
-          </p>
         </div>
       </div>
 
@@ -151,6 +101,10 @@ onMounted(() => {
 <style scoped>
 .download-section {
   position: relative;
+  container-type: inline-size;
+  container-name: app-download;
+  min-width: 0;
+  width: 100%;
 }
 
 .download-section__card {
@@ -158,14 +112,15 @@ onMounted(() => {
   flex-direction: column;
   gap: var(--spacing-xl);
   align-items: center;
-  padding: clamp(24px, 5vw, 48px);
-  border-radius: var(--radius-xl);
+  padding: 20px;
+  border-radius: var(--radius-sm);
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: #fff;
   box-shadow: var(--shadow-xl);
 }
 
 .download-section__info {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -179,8 +134,17 @@ onMounted(() => {
   filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.22));
 }
 
+.ey-logo-mark img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
 .download-section__title {
-  font-size: clamp(24px, 4vw, 32px);
+  font-size: 24px;
+  line-height: 1.5;
   color: #fff;
 }
 
@@ -190,20 +154,31 @@ onMounted(() => {
 }
 
 .download-section__buttons {
-  display: flex;
-  flex-shrink: 1;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   justify-content: center;
   gap: var(--spacing-md);
   margin-top: var(--spacing-md);
 }
 
-.download-section__hint {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.75);
+.download-section__text {
+  min-width: 0;
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.download-section__buttons .btn {
+  width: 100%;
+  min-width: 0;
+  padding-inline: 12px;
+}
+
+.download-section__desc {
+  margin-top: 8px;
 }
 
 .download-section__qr {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -211,6 +186,10 @@ onMounted(() => {
 }
 
 .download-section__qr img {
+  display: block;
+  width: 160px;
+  height: 160px;
+  aspect-ratio: 1;
   border-radius: var(--radius-md);
   background: #fff;
   padding: 8px;
@@ -222,8 +201,9 @@ onMounted(() => {
   font-weight: 700;
 }
 
-@media (min-width: 768px) {
+@container app-download (min-width: 640px) {
   .download-section__card {
+    padding: 32px;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -235,7 +215,18 @@ onMounted(() => {
   }
 
   .download-section__buttons {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
+  }
+
+  .download-section__buttons .btn {
+    width: auto;
+    padding-inline: 22px;
+  }
+
+  .download-section__title {
+    font-size: 28px;
   }
 }
 </style>

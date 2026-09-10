@@ -58,7 +58,7 @@ const { data: specializations } = await useAsyncData<SpecializationDto[]>('docto
 
 const { data: provinces } = await useAsyncData<ProvinceItemDto[]>('doctors-provinces', () => getProvinces())
 
-const pageSize = 9
+const pageSize = 8
 
 const searchParams = computed<SearchDoctorsParams>(() => {
   const p: SearchDoctorsParams = {}
@@ -153,7 +153,7 @@ function onSearch(payload: { name: string; specialization: number | null; provin
         </div>
 
         <div v-if="pending" class="mt-3">
-          <StateSkeleton :count="6" />
+          <StateSkeleton :count="pageSize" />
         </div>
 
         <div v-else-if="doctorsError" class="mt-3">

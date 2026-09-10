@@ -51,7 +51,7 @@ const displayedPrice = computed(() => {
 
 const doctorSlugPath = computed(() => doctorSlug(doctor.value!.id, doctor.value!.normalizedName))
 
-const breadcrumb = computed(() => `عيادتي > الأطباء > د. ${doctor.value!.name}`)
+const breadcrumb = computed(() => `عيادتي > الأطباء > ${doctor.value!.name}`)
 
 // ── SEO ──
 const pageTitle = computed(() => (doctor.value ? doctorPageTitle(doctor.value) : 'طبيب'))
@@ -70,7 +70,7 @@ useHead({
     { property: 'og:description', content: doctor.value ? doctorPageDescription(doctor.value) : '' },
     { property: 'og:type', content: 'profile' },
     { property: 'og:url', content: siteUrl(`/doctor/${doctorSlugPath.value}`) },
-    { property: 'og:image', content: doctorCardImage(doctor.value) ?? `${siteUrl()}/app-icon.svg` },
+    { property: 'og:image', content: doctorCardImage(doctor.value) ?? `${siteUrl()}/onWhiteBG.png` },
     { property: 'profile:first_name', content: doctor.value?.name ?? '' },
   ],
   link: [{ rel: 'canonical', href: siteUrl(`/doctor/${doctorSlugPath.value}`) }],
@@ -98,9 +98,9 @@ function buildDoctorJsonLd(d: PublicDoctorProfileDto, slugPath: string) {
   const doctorNode: Record<string, unknown> = {
     '@type': 'Physician',
     '@id': `${siteUrl()}/doctor/${slugPath}#doctor`,
-    name: `د. ${d.name}`,
+    name: ` ${d.name}`,
     url: siteUrl(`/doctor/${slugPath}`),
-    image: doctorCardImage(d) ?? `${siteUrl()}/app-icon.svg`,
+    image: doctorCardImage(d) ?? `${siteUrl()}/onWhiteBG.png`,
     medicalSpecialty: d.specializationName || undefined,
     availableService: d.canBookOnline ? ['online_booking'] : undefined,
   }
@@ -139,13 +139,8 @@ onMounted(() => {
 
 function handleBook() {
   if (!doctor.value) return
-  const { openAppDeepLink, downloadUrl } = useAppLinks()
   useAnalytics().trackBookingClick(doctor.value.id, primaryClinic.value?.id)
-  if (doctor.value.canBookOnline) {
-    openAppDeepLink(doctor.value.id)
-  } else {
-    window.location.href = downloadUrl(doctor.value.id)
-  }
+  window.open('https://eyadaty.techumbrella.net/booking', '_blank', 'noopener')
 }
 
 function handlePhoneClick(clinicId: number) {
@@ -211,7 +206,7 @@ const isWhatsApp = (link: DoctorExternalLinkDto) => link.type === DoctorExternal
         <ol>
           <li><NuxtLink to="/">الرئيسية</NuxtLink></li>
           <li><NuxtLink to="/doctors">الأطباء</NuxtLink></li>
-          <li aria-current="page">د. {{ doctor.name }}</li>
+          <li aria-current="page"> {{ doctor.name }}</li>
         </ol>
       </nav>
 
@@ -237,7 +232,7 @@ const isWhatsApp = (link: DoctorExternalLinkDto) => link.type === DoctorExternal
               </div>
 
               <div class="profile-identity">
-                <h1 id="doctor-name" class="profile-name">د. {{ doctor.name }}</h1>
+                <h1 id="doctor-name" class="profile-name">{{ doctor.name }}</h1>
                 <p class="profile-spec">
                   <BaseIcon :name="specializationIconName(doctor.specializationNormalizedName)" :size="18" />
                   أخصائي {{ doctor.specializationName }}
@@ -301,7 +296,7 @@ const isWhatsApp = (link: DoctorExternalLinkDto) => link.type === DoctorExternal
 
           <!-- Clinics -->
           <section class="card clinics-block" aria-labelledby="doc-clinics">
-            <h2 id="doc-clinics" class="block-title">أماكن الممارسة</h2>
+            <h2 id="doc-clinics" class="block-title">بيانات العيادة</h2>
             <div class="clinic-list">
               <article v-for="clinic in doctor.clinics" :key="clinic.id" class="clinic">
                 <div class="clinic__main">
@@ -448,8 +443,8 @@ const isWhatsApp = (link: DoctorExternalLinkDto) => link.type === DoctorExternal
               </p>
             </template>
 
-            <DownloadAppSection :doctor-id="doctor.id" variant="page" class="book-card__app" />
           </section>
+          <DownloadAppSection :doctor-id="doctor.id" variant="page" class="book-card__app" />
         </aside>
       </div>
     </div>
@@ -873,5 +868,9 @@ const isWhatsApp = (link: DoctorExternalLinkDto) => link.type === DoctorExternal
 
 .book-card__app {
   margin-top: var(--spacing-xl);
+}
+
+.profile-side {
+  min-width: 0;
 }
 </style>

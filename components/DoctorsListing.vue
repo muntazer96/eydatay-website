@@ -21,8 +21,8 @@ const router = useRouter()
 
 const page = ref(1)
 const name = ref('')
-const userSpec = ref<number | ''>('')
-const userProvince = ref<number | ''>('')
+const userSpec = ref('')
+const userProvince = ref('')
 
 function syncFromQuery() {
   page.value = Math.max(1, Number(route.query.page) || 1)
@@ -50,7 +50,7 @@ const { data: provinces } = await useAsyncData<ProvinceItemDto[]>(
   () => getProvinces(),
 )
 
-const pageSize = 9
+const pageSize = 8
 
 const effectiveFilters = computed<SearchDoctorsParams>(() => {
   const p: SearchDoctorsParams = {}
@@ -58,7 +58,7 @@ const effectiveFilters = computed<SearchDoctorsParams>(() => {
   const spec = userSpec.value !== '' ? Number(userSpec.value) : props.fixedSpecialization
   const prov = userProvince.value !== '' ? Number(userProvince.value) : props.fixedProvince
   if (spec) p.specialization = spec
-  if (prov) p.iraqiProvince = prov
+  if (prov !== null && prov !== undefined) p.iraqiProvince = prov
   p.page = page.value || 1
   p.pageSize = pageSize
   return p
@@ -122,8 +122,8 @@ const hasActiveFilters = computed(
       :specializations="specializations ?? []"
       :provinces="provinces ?? []"
       :initial-name="name"
-      :initial-spec="userSpec || fixedSpecialization"
-      :initial-province="userProvince || fixedProvince"
+      :initial-spec="userSpec !== '' ? userSpec : fixedSpecialization"
+      :initial-province="userProvince !== '' ? userProvince : fixedProvince"
       :compact="true"
       @submit="onSubmit"
     />
@@ -148,7 +148,7 @@ const hasActiveFilters = computed(
     </div>
 
     <div v-if="pending" class="mt-3">
-      <StateSkeleton :count="6" />
+      <StateSkeleton :count="pageSize" />
     </div>
 
     <div v-else-if="error" class="mt-3">

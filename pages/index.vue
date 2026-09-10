@@ -13,7 +13,7 @@ useHead({
     { property: 'og:title', content: 'عيادتي | طبيبك أقرب مما تتوقع' },
     { property: 'og:description', content: 'ابحث عن الطبيب المناسب، اعرف الدوام والموقع، واحجز موعدك بسهولة.' },
     { property: 'og:url', content: siteUrl() },
-    { property: 'og:image', content: `${siteUrl()}/app-icon.svg` },
+    { property: 'og:image', content: `${siteUrl()}/onWhiteBG.png` },
   ],
   link: [{ rel: 'canonical', href: siteUrl() }],
   script: [
@@ -27,7 +27,7 @@ useHead({
             name: 'عيادتي',
             alternateName: 'Eyaadaty',
             url: siteUrl(),
-            logo: `${siteUrl()}/app-icon.svg`,
+            logo: `${siteUrl()}/onWhiteBG.png`,
             sameAs: [],
             description:
               'منصة عراقية تساعد المرضى على اكتشاف الأطباء، معرفة معلومات العيادات، أوقات الدوام، الموقع، التقييمات وحجز المواعيد.',
@@ -154,7 +154,7 @@ function provinceHref(province: ProvinceItemDto) {
         <aside class="hero-visual" aria-label="لمحة عن تجربة عيادتي">
           <div class="phone-shell">
             <div class="phone-shell__top">
-              <img src="/app-icon.svg" alt="" width="48" height="48" />
+              <img src="/onWhiteBG.png" alt="" width="48" height="48" />
               <span>
                 <strong>عيادتي</strong>
                 <small>موعدك أقرب</small>
@@ -290,6 +290,45 @@ function provinceHref(province: ProvinceItemDto) {
       </div>
     </section>
 
+    <section id="about" class="flow-section flow-section--features" aria-labelledby="about-title">
+      <div class="container split-layout">
+        <div class="section-head">
+          <span class="section-eyebrow">من نحن</span>
+          <h2 id="about-title" class="section-title">عيادتي: معلومات للمريض وتنظيم للطبيب</h2>
+          <p class="section-subtitle">منصة عراقية تجمع البحث عن الأطباء ومعلومات العيادات مع أدوات إدارة المواعيد. هدفنا أن يعرف المراجع أين يذهب ومتى، وأن يجد الطبيب معلومات يومه في مكان واحد.</p>
+          <NuxtLink to="/about" class="text-link mt-3">تعرّف على عيادتي <BaseIcon name="arrow-left" :size="18" /></NuxtLink>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-tile">
+            <h3>للمراجع</h3>
+            <p>ابحث بالمحافظة والاختصاص، راجع العنوان والدوام، وتعرّف على طريقة الحجز المتاحة عند الطبيب قبل التواصل.</p>
+          </article>
+          <article class="feature-tile">
+            <h3>للطبيب والعيادة</h3>
+            <p>اعرض معلوماتك وحدّث بيانات عياداتك، ونظّم أوقات الدوام وتابع الحجوزات من أدوات حساب الطبيب.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="doctor-benefits" class="flow-section" aria-labelledby="doctor-benefits-title">
+      <div class="container">
+        <div class="compact-head">
+          <div>
+            <span class="section-eyebrow">للأطباء</span>
+            <h2 id="doctor-benefits-title" class="section-title">شنو يضيف عيادتي ليومك بالعيادة؟</h2>
+          </div>
+          <NuxtLink to="/for-doctors" class="text-link">المميزات وخطوات البدء <BaseIcon name="arrow-left" :size="18" /></NuxtLink>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="calendar-check" :size="26" /></span><h3>مواعيدك بحالات واضحة</h3><p>تابع طلبات الحجز والمواعيد القادمة، وسجّل اكتمال الزيارة أو رفض الطلب المعلّق من حساب الطبيب.</p></article>
+          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="clock-outline" :size="26" /></span><h3>دوام مناسب لكل عيادة</h3><p>حدّد جدول الدوام الأسبوعي وعدّل يوماً محدداً، مع إدارة استثناءات الدوام والعطل.</p></article>
+          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="account-plus" :size="26" /></span><h3>الحجوزات الهاتفية أيضاً</h3><p>أضف الموعد يدوياً للحجوزات التي تصل للعيادة خارج الحجز الإلكتروني، لتتابعها ضمن قائمة المواعيد.</p></article>
+          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="chart-bar" :size="26" /></span><h3>متابعة نشاط الحجوزات</h3><p>راجع إحصائيات المواعيد والحجز القادم، إلى جانب ملفك العام وروابطك ومعلومات التواصل مع عياداتك.</p></article>
+        </div>
+      </div>
+    </section>
+
     <section id="download" class="flow-section flow-section--download">
       <div class="container">
         <DownloadAppSection />
@@ -301,7 +340,7 @@ function provinceHref(province: ProvinceItemDto) {
 <style scoped>
 .one-page {
   position: relative;
-  overflow: hidden;
+  overflow-x: clip;
   background:
     linear-gradient(180deg, rgba(247, 251, 250, 0.96) 0%, rgba(255, 255, 255, 0.98) 42%, rgba(242, 247, 246, 0.96) 100%);
 }
@@ -309,13 +348,11 @@ function provinceHref(province: ProvinceItemDto) {
 .hero-stage {
   position: relative;
   isolation: isolate;
-  min-height: calc(100vh - var(--header-height));
+  min-height: 640px;
   display: flex;
   align-items: center;
   padding-block: clamp(48px, 7vw, 92px);
-  background:
-    linear-gradient(135deg, rgba(5, 46, 48, 0.96), rgba(13, 84, 88, 0.9) 48%, rgba(255, 255, 255, 0.92) 48.2%),
-    radial-gradient(ellipse at 65% 15%, rgba(0, 184, 148, 0.22), transparent 44%);
+  background: #084d50;
   color: #fff;
 }
 
@@ -411,15 +448,15 @@ function provinceHref(province: ProvinceItemDto) {
   margin-top: 20px;
   max-width: 720px;
   color: #fff;
-  font-size: clamp(38px, 7vw, 76px);
-  line-height: 1.08;
+  font-size: 48px;
+  line-height: 1.45;
 }
 
 .hero-copy__subtitle {
   margin-top: 18px;
   max-width: 620px;
   color: rgba(255, 255, 255, 0.78);
-  font-size: clamp(17px, 2.4vw, 21px);
+  font-size: 19px;
   line-height: 1.85;
 }
 
@@ -443,11 +480,13 @@ function provinceHref(province: ProvinceItemDto) {
 .hero-visual {
   display: grid;
   gap: 16px;
+  min-width: 0;
 }
 
 .phone-shell {
   position: relative;
-  min-height: 470px;
+  min-height: 420px;
+  width: 100%;
   padding: 24px;
   border: 1px solid rgba(10, 58, 61, 0.12);
   border-radius: 28px;
@@ -486,9 +525,8 @@ function provinceHref(province: ProvinceItemDto) {
 }
 
 .phone-shell__pulse {
-  position: absolute;
-  inset-inline: 34px;
-  top: 142px;
+  position: relative;
+  margin-block: 24px;
   height: 126px;
   border-radius: 8px;
   background:
@@ -508,8 +546,7 @@ function provinceHref(province: ProvinceItemDto) {
 }
 
 .mini-card {
-  position: absolute;
-  inset-inline: 24px;
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -526,16 +563,16 @@ function provinceHref(province: ProvinceItemDto) {
 }
 
 .mini-card--doctor {
-  bottom: 132px;
+  margin-bottom: 12px;
 }
 
 .mini-card--clinic {
-  bottom: 42px;
+  margin-bottom: 0;
 }
 
 .hero-metrics {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -657,7 +694,7 @@ function provinceHref(province: ProvinceItemDto) {
 
 .specialty-rail {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -684,9 +721,9 @@ function provinceHref(province: ProvinceItemDto) {
 }
 
 .specialty-pill > span:nth-child(2) {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
 }
 
 .specialty-pill > svg {
@@ -784,7 +821,7 @@ function provinceHref(province: ProvinceItemDto) {
 
 .journey__number {
   position: absolute;
-  inset-inline-start: 18px;
+  inset-inline-end: 18px;
   top: 18px;
   color: rgba(19, 121, 107, 0.18);
   font-size: 42px;
@@ -846,11 +883,6 @@ function provinceHref(province: ProvinceItemDto) {
 }
 
 @media (max-width: 1080px) {
-  .hero-stage {
-    background:
-      linear-gradient(180deg, rgba(5, 46, 48, 0.97), rgba(13, 84, 88, 0.93) 58%, rgba(244, 249, 248, 0.98) 58.2%);
-  }
-
   .hero-stage__inner,
   .split-layout,
   .governorate-band {
@@ -864,6 +896,15 @@ function provinceHref(province: ProvinceItemDto) {
   .phone-shell {
     max-width: 460px;
     margin-inline: auto;
+  }
+
+  .hero-visual {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .hero-metrics {
+    grid-template-columns: 1fr;
   }
 
   .province-grid {
@@ -882,7 +923,7 @@ function provinceHref(province: ProvinceItemDto) {
   }
 
   .hero-copy__title {
-    font-size: clamp(34px, 12vw, 52px);
+    font-size: 34px;
   }
 
   .hero-copy__actions,
@@ -909,6 +950,35 @@ function provinceHref(province: ProvinceItemDto) {
 
   .journey::before {
     display: none;
+  }
+}
+
+.hero-copy,
+.feature-tile,
+.governorate-band__copy,
+.journey__item {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.hero-search-panel :deep(.search-form) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.hero-search-panel :deep(.search-form__field--grow),
+.hero-search-panel :deep(.search-form > .btn) {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 480px) {
+  .hero-search-panel :deep(.search-form) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-copy__kicker {
+    padding-block: 8px;
+    border-radius: 8px;
+    font-size: 13px;
   }
 }
 </style>

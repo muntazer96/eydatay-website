@@ -25,6 +25,11 @@ const form = reactive({
 
 const state = ref<FormState>('idle')
 const errorMessage = ref('')
+const formStartedAt = ref('')
+
+onMounted(() => {
+  formStartedAt.value = new Date().toISOString()
+})
 
 async function submit() {
   if (state.value === 'sending') return
@@ -32,13 +37,12 @@ async function submit() {
   state.value = 'sending'
   errorMessage.value = ''
 
-  const start = Date.now()
   try {
     await $fetch('/api/contact', {
       method: 'POST',
       body: {
         ...form,
-        sentAt: new Date(start).toISOString(),
+        sentAt: formStartedAt.value,
       },
     })
     state.value = 'success'
@@ -55,6 +59,7 @@ function resetForm() {
   form.phone = ''
   form.subject = ''
   form.message = ''
+  formStartedAt.value = new Date().toISOString()
   state.value = 'idle'
 }
 </script>
@@ -77,7 +82,7 @@ function resetForm() {
               <span class="ci-icon"><BaseIcon name="email-outline" :size="22" /></span>
               <div>
                 <strong>البريد الإلكتروني</strong>
-                <a href="mailto:support@eyadaty.techumbrella.net">support@eyadaty.techumbrella.net</a>
+                <a href="mailto:eyadaty.iq@gmail.com" dir="ltr">eyadaty.iq@gmail.com</a>
               </div>
             </li>
             <li>
@@ -105,6 +110,7 @@ function resetForm() {
               <label for="c-name">الاسم الكامل *</label>
               <input
                 id="c-name"
+                maxlength="120"
                 v-model="form.name"
                 type="text"
                 required
@@ -116,6 +122,7 @@ function resetForm() {
               <label for="c-email">البريد الإلكتروني *</label>
               <input
                 id="c-email"
+                maxlength="200"
                 v-model="form.email"
                 type="email"
                 required
@@ -125,16 +132,17 @@ function resetForm() {
             </div>
             <div class="field">
               <label for="c-phone">رقم الهاتف</label>
-              <input id="c-phone" v-model="form.phone" type="tel" autocomplete="tel" dir="ltr" placeholder="07XX XXX XXXX" />
+              <input id="c-phone" v-model="form.phone" type="tel" maxlength="30" autocomplete="tel" dir="ltr" placeholder="07XX XXX XXXX" />
             </div>
             <div class="field">
               <label for="c-subject">الموضوع *</label>
-              <input id="c-subject" v-model="form.subject" type="text" required placeholder="موضوع الرسالة" />
+              <input id="c-subject" v-model="form.subject" type="text" maxlength="120" required placeholder="موضوع الرسالة" />
             </div>
             <div class="field field--full">
               <label for="c-message">الرسالة *</label>
               <textarea
                 id="c-message"
+                maxlength="2700"
                 v-model="form.message"
                 required
                 rows="6"
@@ -192,13 +200,13 @@ function resetForm() {
 
 .contact-layout {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--spacing-xl);
 }
 
 @media (min-width: 900px) {
   .contact-layout {
-    grid-template-columns: 340px 1fr;
+    grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
     align-items: start;
   }
 }
@@ -223,6 +231,11 @@ function resetForm() {
 .contact-info li {
   display: flex;
   gap: var(--spacing-md);
+}
+
+.contact-layout > *,
+.contact-info li > div {
+  min-width: 0;
 }
 
 .ci-icon {
@@ -250,6 +263,7 @@ function resetForm() {
 }
 
 .contact-info a {
+  overflow-wrap: anywhere;
   color: var(--color-primary);
   font-weight: 700;
   font-size: 14px;
@@ -264,14 +278,15 @@ function resetForm() {
 }
 
 .form-grid {
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--spacing-md);
 }
 
 @media (min-width: 640px) {
   .form-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -293,6 +308,7 @@ function resetForm() {
 .field input,
 .field textarea {
   width: 100%;
+  min-width: 0;
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 12px 14px;
@@ -316,10 +332,28 @@ function resetForm() {
 /* Honeypot hidden from humans */
 .field--hp {
   position: absolute;
-  left: -9999px;
+  inset-block-start: 0;
+  inset-inline-start: 0;
   width: 1px;
   height: 1px;
+  padding: 0;
+  margin: 0;
+  clip-path: inset(50%);
   overflow: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .contact-info,
+  .contact-form-card {
+    padding: 16px;
+  }
+
+  .field input,
+  .field textarea {
+    font-size: 16px;
+  }
 }
 
 .form-error {

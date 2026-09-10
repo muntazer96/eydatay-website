@@ -28,7 +28,7 @@ function trackView() {
       <div class="doctor-card__media">
         <img
           :src="imageSrc"
-          :alt="`د. ${doctor.name} — صورة الطبيب`"
+          :alt="`${doctor.name} — صورة الطبيب`"
           class="doctor-card__img"
           loading="lazy"
           decoding="async"
@@ -41,7 +41,7 @@ function trackView() {
 
       <div class="doctor-card__body">
         <div class="doctor-card__title-row">
-          <h3 class="doctor-card__name">د. {{ doctor.name }}</h3>
+          <h3 class="doctor-card__name"> {{ doctor.name }}</h3>
           <span v-if="doctor.averageRating !== null" class="doctor-card__rating" title="التقييم العام">
             <BaseIcon name="star" :size="15" color="#e8a33d" />
             {{ doctor.averageRating.toFixed(1) }}

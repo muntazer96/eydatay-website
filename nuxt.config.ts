@@ -34,8 +34,8 @@ export default defineNuxtConfig({
         { name: 'twitter:site', content: '@eyadaty' },
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'apple-touch-icon', href: '/app-icon.svg' },
+        { rel: 'icon', type: 'image/png', href: '/onWhiteBG.png' },
+        { rel: 'apple-touch-icon', href: '/onWhiteBG.png' },
         { rel: 'canonical', href: 'https://eyadaty.techumbrella.net/' },
       ],
       style: [],
@@ -48,7 +48,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://eyadaty.techumbrella.net/api',
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://eyadaty.techumbrella.net',
-      androidPlayStoreUrl: process.env.NUXT_PUBLIC_ANDROID_PLAY_STORE_URL || '',
+      androidPlayStoreUrl: process.env.NUXT_PUBLIC_ANDROID_PLAY_STORE_URL || 'https://play.google.com/store/apps/details?id=com.clinicbooking.clinic_app',
       iosAppStoreUrl: process.env.NUXT_PUBLIC_IOS_APP_STORE_URL || '',
       androidPackage: 'com.clinicbooking.clinic_app',
     },

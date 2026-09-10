@@ -30,12 +30,15 @@ const name = ref(props.initialName)
 const specialization = ref<number | ''>('')
 const province = ref<number | ''>('')
 
-onMounted(() => {
-  const spec = toRaw(props.initialSpec)
-  const prov = toRaw(props.initialProvince)
-  if (spec !== null && spec !== undefined && spec !== '') specialization.value = Number(spec) || ''
-  if (prov !== null && prov !== undefined && prov !== '') province.value = Number(prov) || ''
-})
+function selection(value: string | number | null | undefined): number | '' {
+  if (value === null || value === undefined || value === '') return ''
+  const id = Number(value)
+  return Number.isFinite(id) ? id : ''
+}
+
+watch(() => props.initialName, (value: string) => { name.value = value }, { immediate: true })
+watch(() => props.initialSpec, (value: string | number | null) => { specialization.value = selection(value) }, { immediate: true })
+watch(() => props.initialProvince, (value: string | number | null) => { province.value = selection(value) }, { immediate: true })
 
 function onSubmit() {
   emit('submit', {
@@ -101,13 +104,14 @@ function onSubmit() {
 }
 
 .search-form {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--spacing-md);
   width: 100%;
 }
 
 .search-form__field {
+  min-width: 0;
   position: relative;
   display: flex;
   align-items: center;
@@ -135,6 +139,7 @@ function onSubmit() {
 }
 
 .search-form__input {
+  min-width: 0;
   width: 100%;
   min-height: 54px;
   padding: 0 48px 0 16px;
@@ -153,13 +158,14 @@ function onSubmit() {
 }
 
 .search-form__select {
+  min-width: 0;
   width: 100%;
   min-height: 54px;
   padding: 0 14px;
   border: 0;
   background: transparent;
   color: var(--color-text);
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -173,30 +179,26 @@ function onSubmit() {
 
 @media (min-width: 768px) {
   .search-form {
-    flex-direction: row;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .search-form__field--grow {
-    flex: 1 1 100%;
-  }
-
-  .search-form__field:not(.search-form__field--grow) {
-    flex: 1 1 200px;
+    grid-column: 1 / -1;
   }
 
   .search-form .btn {
-    flex: 0 0 auto;
+    grid-column: 1 / -1;
   }
 }
 
 @media (min-width: 1024px) {
   .search-form {
-    flex-wrap: nowrap;
+    grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)) auto;
   }
 
-  .search-form__field--grow {
-    flex: 1 1 auto;
+  .search-form__field--grow,
+  .search-form .btn {
+    grid-column: auto;
   }
 }
 </style>

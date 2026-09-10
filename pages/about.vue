@@ -30,9 +30,9 @@ useHead({
 })
 
 const values = [
-  { icon: 'shield-check', title: 'معلومات موثوقة', desc: 'نحرص على أن تكون بيانات الأطباء والعيادات محدثة وموثوقة.' },
-  { icon: 'heart', title: 'رعاية حقيقية', desc: 'نساعدك على اتخاذ قرار صحي واعٍ أقرب إلى طبيبك الذي تثق به.' },
-  { icon: 'map-marker-radius', title: 'قريب منك', desc: 'نغطي جميع محافظات العراق لنقرّب الخدمة الصحية منك.' },
+  { icon: 'magnify', title: 'معلومات قبل الحجز', desc: 'الاختصاص والمحافظة وعنوان العيادة والدوام تساعد المراجع على اختيار الطبيب والتواصل معه.' },
+  { icon: 'calendar-check', title: 'تنظيم عمل العيادة', desc: 'أدوات الطبيب تجمع المواعيد والدوام وبيانات العيادات لتسهيل متابعة العمل اليومي.' },
+  { icon: 'headset', title: 'قناة للملاحظات', desc: 'رسائل التواصل تصل إلى قسم البلاغات لدى الإدارة لمتابعة الاستفسارات والمشكلات.' },
 ]
 </script>
 
@@ -40,7 +40,8 @@ const values = [
   <main>
     <section class="page-hero">
       <div class="container">
-        <h1 class="page-hero__title">منظومات صحية... عناية بسيطة</h1>
+        <img :src="'/onWhiteBG.png'" class="page-hero__logo" alt="شعار عيادتي" width="112" height="112" />
+        <h1 class="page-hero__title">من نحن</h1>
         <p class="page-hero__subtitle">
           عيادتي منصة عراقية أُنشأت لربط المريض بطبيبه بكل سهولة ومصداقية.
         </p>
@@ -53,15 +54,15 @@ const values = [
           <p>
             في <strong>عيادتي</strong>، نؤمن أن الوصول إلى الطبيب المناسب لا يجب أن يكون معقداً.
             جمعنا لك معلومات الأطباء والعيادات في مكانٍ واحد: الاختصاص، العنوان، أوقات الدوام،
-            الموقع، الأسعار والتقييمات — بعيداً عن الالتباس والإعلانات الوهمية.
+            الموقع والتقييمات ومعلومات الحجز المتاحة لكل طبيب.
           </p>
           <p>
-            نخدم آلاف الباحثين عن أطباء في جميع محافظات العراق، ونساعد الأطباء والعيادات على
-            عرض ملفهم وإدارة مواعيدهم بشكل عصري ومبسط.
+            نخدم المراجعين الباحثين عن طبيب بحسب المحافظة والاختصاص، ونساعد الأطباء والعيادات على
+            عرض ملفاتهم وتنظيم الدوام ومتابعة مواعيدهم. يختلف توفر الحجز الإلكتروني بحسب إعدادات الطبيب والعيادة.
           </p>
         </div>
 
-        <div class="grid grid--benefits">
+        <div class="about-benefits">
           <div v-for="v in values" :key="v.title" class="benefit card card--hover">
             <span class="benefit__icon"><BaseIcon :name="v.icon" :size="28" /></span>
             <h2 class="benefit__title">{{ v.title }}</h2>
@@ -74,15 +75,15 @@ const values = [
     <section class="section cta-section">
       <div class="container">
         <div class="cta-box">
-          <h2>شاركنا رحلتنا</h2>
-          <p>جرّب عيادتي اليوم واكتشف طبيبك بنفسك.</p>
+          <h2>عندك استفسار أو ملاحظة على معلومات عيادة؟</h2>
+          <p>اذكر اسم الطبيب والعيادة وتفاصيل الملاحظة في نموذج التواصل حتى تستطيع الإدارة متابعتها.</p>
           <div class="cta-box__actions">
             <NuxtLink to="/doctors" class="btn btn--light btn--lg">
               <BaseIcon name="magnify" :size="20" />
               ابحث عن طبيب
             </NuxtLink>
-            <NuxtLink to="/for-doctors" class="btn btn--outline-light btn--lg">
-              انضم كطبيب
+            <NuxtLink to="/contact" class="btn btn--light btn--lg">
+              تواصل مع عيادتي
             </NuxtLink>
           </div>
         </div>
@@ -100,7 +101,15 @@ const values = [
 }
 
 .page-hero__title {
-  font-size: clamp(26px, 4.5vw, 40px);
+  font-size: 32px;
+}
+
+.page-hero__logo {
+  display: block;
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+  margin: 0 auto 16px;
 }
 
 .page-hero__subtitle {
@@ -111,6 +120,7 @@ const values = [
 }
 
 .about-text {
+  margin-bottom: 32px;
   max-width: 720px;
   margin-inline: auto;
   text-align: center;
@@ -120,6 +130,19 @@ const values = [
 
 .about-text p + p {
   margin-top: var(--spacing-md);
+}
+
+.about-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-lg);
+}
+
+.about-benefits > .benefit {
+  flex: 0 1 280px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .benefit {

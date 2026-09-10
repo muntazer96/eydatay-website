@@ -67,6 +67,7 @@
 html {
   direction: rtl;
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 20px);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -168,7 +169,7 @@ p {
 }
 
 .section-title {
-  font-size: clamp(24px, 4vw, 34px);
+  font-size: 32px;
   color: var(--color-text);
 }
 
@@ -197,12 +198,12 @@ p {
   justify-content: center;
   gap: 8px;
   min-height: 46px;
-  padding: 0 22px;
+  padding: 12px 22px;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   font-weight: 700;
   font-size: 15px;
-  line-height: 1;
+  line-height: 1.5;
   background: var(--color-surface);
   color: var(--color-text);
   transition:
@@ -211,7 +212,10 @@ p {
     color 0.16s ease,
     transform 0.16s ease,
     box-shadow 0.16s ease;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   user-select: none;
 }
 
@@ -336,6 +340,7 @@ p {
 
 /* ── Forms ── */
 .field {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -451,7 +456,7 @@ p {
 }
 
 .grid--doctors {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
 }
 
 .grid--specializations {
@@ -493,4 +498,5 @@ p {
 /* Ruptured fallback for retina/high-DPI screens */
 @media (max-width: 600px) {
   body { font-size: 15px; }
+  .section-title { font-size: 26px; }
 }
