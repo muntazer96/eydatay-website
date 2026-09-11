@@ -158,7 +158,7 @@ function handleExternalLink(link: DoctorExternalLinkDto) {
 async function handleShare() {
   if (!doctor.value) return
   const url = siteUrl(`/doctor/${doctorSlugPath.value}`)
-  const title = `د. ${doctor.value.name} - ${doctor.value.specializationName || ''}`
+  const title = ` ${doctor.value.name} - ${doctor.value.specializationName || ''}`
   if (navigator.share) {
     try {
       await navigator.share({ title, url })
@@ -219,7 +219,7 @@ const isWhatsApp = (link: DoctorExternalLinkDto) => link.type === DoctorExternal
               <div class="profile-avatar">
                 <img
                   :src="doctorCardImage(doctor)"
-                  :alt="`صورة د. ${doctor.name}`"
+                  :alt="`صورة ${doctor.name}`"
                   width="120"
                   height="120"
                   loading="lazy"
@@ -414,7 +414,7 @@ const isWhatsApp = (link: DoctorExternalLinkDto) => link.type === DoctorExternal
               <div class="book-card__doctor">
                 <img
                   :src="doctorCardImage(doctor)"
-                  :alt="`د. ${doctor.name}`"
+                  :alt="` ${doctor.name}`"
                   width="44"
                   height="44"
                   loading="lazy"

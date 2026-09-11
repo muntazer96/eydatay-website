@@ -85,7 +85,7 @@ export function doctorPageTitle(doctor: PublicDoctorProfileDto): string {
   const governorate = doctor.clinics[0]?.iraqiProvinceName
   const spec = doctor.specializationName
   const segments: string[] = []
-  if (doctor.name) segments.push(`د. ${doctor.name}`)
+  if (doctor.name) segments.push(` ${doctor.name}`)
   if (spec) segments.push(`أخصائي ${spec}`)
   if (governorate) segments.push(`في ${governorate}`)
   return segments.join(' - ')
@@ -95,7 +95,7 @@ export function doctorPageTitle(doctor: PublicDoctorProfileDto): string {
 export function doctorPageDescription(doctor: PublicDoctorProfileDto): string {
   const governorate = doctor.clinics[0]?.iraqiProvinceName
   const pieces = [
-    `تعرف على معلومات د. ${doctor.name}`,
+    `تعرف على معلومات ${doctor.name}`,
     doctor.specializationName ? `أخصائي ${doctor.specializationName}` : '',
     governorate ? `في ${governorate}` : '',
     '، عنوان العيادة، أوقات الدوام، موقع العيادة ومعلومات الحجز من خلال عيادتي.',

@@ -48,11 +48,15 @@ useHead({
   ],
 })
 
-const { data: specializations } = await useAsyncData<SpecializationDto[]>('home-specializations', () =>
+const { data: specializations, pending: specsPending, error: specsError, refresh: refreshSpecs } = await useAsyncData<SpecializationDto[]>('home-specializations', () =>
   getSpecializations(),
 )
 
-const { data: provinces } = await useAsyncData<ProvinceItemDto[]>('home-provinces', () => getProvinces())
+const { data: provinces, pending: provincesPending, error: provincesError, refresh: refreshProvinces } = await useAsyncData<ProvinceItemDto[]>('home-provinces', () => getProvinces())
+const { data: homeDoctors, pending: doctorsPending, error: doctorsError, refresh: refreshDoctors } = await useAsyncData(
+  'home-doctors-preview', () => searchDoctors({ page: 1, pageSize: 4 }),
+)
+const previewDoctors = computed(() => (homeDoctors.value?.items ?? []).slice(0, 4))
 
 const featuredSpecializations = computed(() => (specializations.value ?? []).slice(0, 10))
 const popularProvinces = computed(() => {
@@ -131,21 +135,12 @@ function provinceHref(province: ProvinceItemDto) {
             ابحث، اعرف موقع العيادة وأوقات الدوام، وشوف معلومات الحجز بدون تنقل زائد.
           </p>
 
-          <div class="hero-search-panel" aria-label="البحث عن طبيب">
-            <DoctorSearchForm
-              :specializations="specializations ?? []"
-              :provinces="provinces ?? []"
-              submit-label="ابدأ البحث"
-              @submit="onSearch"
-            />
-          </div>
-
           <div class="hero-copy__actions">
             <NuxtLink to="/download" class="btn btn--primary btn--lg" @click="useAnalytics().trackAppDownloadClick()">
               <BaseIcon name="cellphone-arrow-down" :size="22" />
               تحميل التطبيق
             </NuxtLink>
-            <NuxtLink to="/contact" class="btn btn--secondary btn--lg">
+            <NuxtLink to="/#contact" class="btn btn--secondary btn--lg">
               <BaseIcon name="headset" :size="21" />
               الدعم والمساعدة
             </NuxtLink>
@@ -188,6 +183,19 @@ function provinceHref(province: ProvinceItemDto) {
             </div>
           </div>
         </aside>
+
+        <div class="hero-search-panel" aria-label="البحث عن طبيب">
+          <div class="hero-search-panel__head">
+            <span>ابحث عن طبيبك</span>
+            <small>بالاسم أو الاختصاص أو المحافظة</small>
+          </div>
+          <DoctorSearchForm
+            :specializations="specializations ?? []"
+            :provinces="provinces ?? []"
+            submit-label="ابحث عن طبيب"
+            @submit="onSearch"
+          />
+        </div>
       </div>
     </section>
 
@@ -212,7 +220,7 @@ function provinceHref(province: ProvinceItemDto) {
       </div>
     </section>
 
-    <section id="specializations" v-if="featuredSpecializations.length" class="flow-section" aria-labelledby="specs-title">
+    <section id="specializations" class="flow-section" aria-labelledby="specs-title">
       <div class="container">
         <div class="compact-head">
           <div>
@@ -225,7 +233,10 @@ function provinceHref(province: ProvinceItemDto) {
           </NuxtLink>
         </div>
 
-        <div class="specialty-rail">
+        <StateSkeleton v-if="specsPending" :count="3" />
+        <ErrorState v-else-if="specsError" message="تعذر تحميل التخصصات." @retry="refreshSpecs()" />
+        <p v-else-if="!featuredSpecializations.length" class="section-subtitle">لا توجد تخصصات متاحة حالياً.</p>
+        <div v-else class="specialty-rail">
           <NuxtLink
             v-for="spec in featuredSpecializations"
             :key="spec.id"
@@ -243,7 +254,7 @@ function provinceHref(province: ProvinceItemDto) {
       </div>
     </section>
 
-    <section id="governorates" v-if="popularProvinces.length" class="flow-section flow-section--map" aria-labelledby="gov-title">
+    <section id="governorates" class="flow-section flow-section--map" aria-labelledby="gov-title">
       <div class="container governorate-band">
         <div class="governorate-band__copy">
           <span class="section-eyebrow section-eyebrow--light">المحافظات</span>
@@ -253,7 +264,10 @@ function provinceHref(province: ProvinceItemDto) {
           </p>
         </div>
 
-        <div class="province-grid">
+        <StateSkeleton v-if="provincesPending" :count="3" />
+        <div v-else-if="provincesError" class="province-status"><ErrorState message="تعذر تحميل المحافظات." @retry="refreshProvinces()" /></div>
+        <p v-else-if="!popularProvinces.length">لا توجد محافظات متاحة حالياً.</p>
+        <div v-else class="province-grid">
           <NuxtLink
             v-for="province in popularProvinces"
             :key="province.id"
@@ -330,6 +344,25 @@ function provinceHref(province: ProvinceItemDto) {
       </div>
     </section>
 
+    <section id="doctors-preview" class="flow-section" aria-labelledby="doctors-preview-title">
+      <div class="container">
+        <div class="compact-head">
+          <div><span class="section-eyebrow">أطباء عيادتي</span><h2 id="doctors-preview-title" class="section-title">تعرّف على الأطباء</h2></div>
+          <NuxtLink to="/doctors" class="text-link">عرض المزيد <BaseIcon name="arrow-left" :size="18" /></NuxtLink>
+        </div>
+        <StateSkeleton v-if="doctorsPending" :count="4" />
+        <ErrorState v-else-if="doctorsError" message="تعذر تحميل الأطباء." @retry="refreshDoctors()" />
+        <div v-else-if="previewDoctors.length" class="home-doctors-grid">
+          <DoctorCard v-for="doctor in previewDoctors" :key="doctor.id" :doctor="doctor" />
+        </div>
+        <EmptyState v-else icon="account-search" title="لا يوجد أطباء للعرض حالياً" message="يمكنك زيارة صفحة الأطباء والبحث حسب المحافظة والاختصاص." action-to="/doctors" action-label="البحث عن طبيب" />
+      </div>
+    </section>
+
+    <section id="subscriptions" aria-label="اشتراكات الأطباء"><SubscriptionPlans embedded /></section>
+
+    <section id="contact" aria-label="تواصل معنا"><ContactSection embedded /></section>
+
     <section id="download" class="flow-section flow-section--download">
       <div class="container">
         <DownloadAppSection />
@@ -345,6 +378,12 @@ function provinceHref(province: ProvinceItemDto) {
   background:
     linear-gradient(180deg, rgba(247, 251, 250, 0.96) 0%, rgba(255, 255, 255, 0.98) 42%, rgba(242, 247, 246, 0.96) 100%);
 }
+
+.province-status { background: var(--color-surface); color: var(--color-text); border-radius: 8px; padding: 16px; }
+
+.home-doctors-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 1050px) { .home-doctors-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .home-doctors-grid { grid-template-columns: minmax(0, 1fr); } }
 
 .hero-stage {
   position: relative;
@@ -462,6 +501,9 @@ function provinceHref(province: ProvinceItemDto) {
 }
 
 .hero-search-panel {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: min(1600px, calc(100vw - 48px));
   margin-top: 30px;
   padding: clamp(14px, 2vw, 18px);
   border: 1px solid rgba(255, 255, 255, 0.26);
@@ -469,6 +511,29 @@ function provinceHref(province: ProvinceItemDto) {
   background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 24px 70px rgba(0, 28, 31, 0.22);
   backdrop-filter: blur(14px);
+}
+
+.hero-search-panel :deep(.search-form) {
+  grid-template-columns: minmax(280px, 1.35fr) repeat(2, minmax(220px, 1fr)) minmax(190px, 0.75fr);
+}
+
+.hero-search-panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  color: var(--color-text);
+}
+
+.hero-search-panel__head span {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.hero-search-panel__head small {
+  color: var(--color-text-muted);
+  font-size: 13px;
 }
 
 .hero-copy__actions {
@@ -912,6 +977,15 @@ function provinceHref(province: ProvinceItemDto) {
     padding-inline: clamp(20px, 4vw, 42px);
   }
 
+  .hero-search-panel :deep(.search-form) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-search-panel :deep(.search-form__field--grow),
+  .hero-search-panel :deep(.search-form > .btn) {
+    grid-column: 1 / -1;
+  }
+
   .specialty-rail {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -942,6 +1016,14 @@ function provinceHref(province: ProvinceItemDto) {
     display: none;
   }
 
+  .hero-search-panel {
+    width: calc(100vw - 24px);
+  }
+
+  .hero-search-panel :deep(.search-form) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .feature-grid,
   .specialty-rail,
   .province-grid,
@@ -962,18 +1044,11 @@ function provinceHref(province: ProvinceItemDto) {
   overflow-wrap: anywhere;
 }
 
-.hero-search-panel :deep(.search-form) {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.hero-search-panel :deep(.search-form__field--grow),
-.hero-search-panel :deep(.search-form > .btn) {
-  grid-column: 1 / -1;
-}
-
 @media (max-width: 480px) {
-  .hero-search-panel :deep(.search-form) {
-    grid-template-columns: minmax(0, 1fr);
+  .hero-search-panel__head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .hero-copy__kicker {

@@ -18,10 +18,12 @@ export function apiBase(): string {
   return base.endsWith('/') ? base.slice(0, -1) : base
 }
 
-/** Official site origin used in canonical links / meta (no trailing slash). */
+/** Absolute public site URL including Nuxt's deployment base path. */
 export function siteUrl(path = ''): string {
-  const url = useApiConfig().siteUrl
-  const base = url.endsWith('/') ? url.slice(0, -1) : url
+  const configured = String(useApiConfig().siteUrl).replace(/\/+$/, '')
+  const appBase = String(useRuntimeConfig().app.baseURL || '/')
+  const basePath = appBase === '/' ? '' : `/${appBase.replace(/^\/+|\/+$/g, '')}`
+  const base = basePath && !configured.endsWith(basePath) ? `${configured}${basePath}` : configured
   if (!path) return base
   const clean = path.startsWith('/') ? path : `/${path}`
   return `${base}${clean}`

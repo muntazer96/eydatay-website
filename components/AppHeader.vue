@@ -10,9 +10,10 @@ const navItems = [
   { label: 'التخصصات', to: '/#specializations', sectionId: 'specializations' },
   { label: 'المحافظات', to: '/#governorates', sectionId: 'governorates' },
   { label: 'مميزات الأطباء', to: '/#doctor-benefits', sectionId: 'doctor-benefits' },
-  { label: 'الاشتراكات', to: '/subscriptions' },
-  { label: 'الأطباء', to: '/doctors' },
-  { label: 'تواصل معنا', to: '/contact' },
+  { label: 'ليش عيادتي؟', to: '/#features', sectionId: 'features' },
+  { label: 'أطباء عيادتي', to: '/#doctors-preview', sectionId: 'doctors-preview' },
+  { label: 'الاشتراكات', to: '/#subscriptions', sectionId: 'subscriptions' },
+  { label: 'تواصل معنا', to: '/#contact', sectionId: 'contact' },
 ]
 
 const homeSectionIds = navItems.map((item) => item.sectionId).filter((id): id is string => Boolean(id))
@@ -40,7 +41,7 @@ function setupSectionObserver() {
 
   if (route.path !== '/' || typeof window === 'undefined') return
 
-  if (!('IntersectionObserver' in window)) {
+  if (typeof window.IntersectionObserver !== 'function') {
     window.addEventListener('scroll', syncActiveSection, { passive: true })
     syncActiveSection()
     return
@@ -198,9 +199,9 @@ function trackNavCta() {
   display: inline-flex;
   align-items: center;
   min-height: 36px;
-  padding: 0 11px;
+  padding: 0 8px;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--color-text-secondary);
   transition: color 0.15s ease, background-color 0.15s ease;
@@ -284,7 +285,7 @@ function trackNavCta() {
   transform: translateY(-6px);
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1280px) {
   .app-header__nav {
     display: flex;
   }

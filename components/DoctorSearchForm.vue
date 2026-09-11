@@ -65,22 +65,12 @@ function onSubmit() {
 
     <div class="search-form__field">
       <label class="sr-only" :for="`search-spec-${uid}`">الاختصاص</label>
-      <select v-model="specialization" class="search-form__select" :id="`search-spec-${uid}`">
-        <option value="">كل التخصصات</option>
-        <option v-for="spec in specializations" :key="spec.id" :value="spec.id">
-          {{ spec.name }}
-        </option>
-      </select>
+      <SearchAutocomplete :id="`search-spec-${uid}`" v-model="specialization" :options="specializations" label="الاختصاص" placeholder="كل التخصصات" />
     </div>
 
     <div class="search-form__field">
       <label class="sr-only" :for="`search-prov-${uid}`">المحافظة</label>
-      <select v-model="province" class="search-form__select" :id="`search-prov-${uid}`">
-        <option value="">كل المحافظات</option>
-        <option v-for="p in provinces" :key="p.id" :value="p.id">
-          {{ p.name }}
-        </option>
-      </select>
+      <SearchAutocomplete :id="`search-prov-${uid}`" v-model="province" :options="provinces" label="المحافظة" placeholder="كل المحافظات" />
     </div>
 
     <button type="submit" class="btn btn--primary btn--lg">
@@ -123,6 +113,7 @@ function onSubmit() {
 }
 
 .search-form__field:focus-within {
+  z-index: 40;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(15, 143, 129, 0.14), 0 12px 26px rgba(15, 58, 63, 0.08);
 }
@@ -154,22 +145,6 @@ function onSubmit() {
 }
 
 .search-form__input:focus {
-  outline: none;
-}
-
-.search-form__select {
-  min-width: 0;
-  width: 100%;
-  min-height: 54px;
-  padding: 0 14px;
-  border: 0;
-  background: transparent;
-  color: var(--color-text);
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.search-form__select:focus {
   outline: none;
 }
 

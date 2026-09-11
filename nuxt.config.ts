@@ -6,6 +6,12 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   ssr: true,
 
+  experimental: {
+    // Keep SSR data in the document so hydration does not depend on a second
+    // _payload.json request, which can be reset by the hosting proxy.
+    payloadExtraction: false,
+  },
+
   modules: [],
 
   css: [
@@ -40,7 +46,7 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/png', href: publicPath('/onWhiteBG.png') },
         { rel: 'apple-touch-icon', href: publicPath('/onWhiteBG.png') },
-        { rel: 'canonical', href: 'https://eyadaty.techumbrella.net/' },
+        { rel: 'canonical', href: 'https://eyadaty.techumbrella.net/website/' },
       ],
       style: [],
       script: [],
@@ -60,19 +66,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { swr: 900 },
-    '/doctors/**': { swr: 300 },
-    '/doctor/**': { swr: 300 },
-    '/specializations': { swr: 3600 },
-    '/about': { swr: 3600 },
-    '/for-doctors': { swr: 3600 },
-    '/download': { swr: 3600 },
-    '/contact': { swr: 600 },
-    '/privacy': { swr: 86400 },
-    '/terms': { swr: 86400 },
     '/__nuxt_error': { cache: false },
-    '/sitemap.xml': { swr: 3600 },
-    '/robots.txt': { swr: 86400 },
   },
 
   typescript: {

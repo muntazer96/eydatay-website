@@ -5,7 +5,7 @@ export function useAppLinks() {
   const iosAppStoreUrl = config.iosAppStoreUrl as string
 
   function downloadUrl(doctorId?: number | string): string {
-    const url = new URL('/download', siteUrl())
+    const url = new URL(siteUrl('/download'))
     if (doctorId !== undefined && doctorId !== null && doctorId !== '') {
       url.searchParams.set('doctorId', String(doctorId))
     }
