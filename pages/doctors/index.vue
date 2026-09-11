@@ -194,8 +194,7 @@ function onSearch(payload: { name: string; specialization: number | null; provin
 .page-hero__inner {
   padding-block: clamp(32px, 6vw, 64px);
   text-align: center;
-  max-width: 760px;
-  margin-inline: auto;
+  width: 100%;
 }
 
 .page-hero__title {

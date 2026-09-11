@@ -156,22 +156,17 @@ function provinceHref(province: ProvinceItemDto) {
                 <small>موعدك أقرب</small>
               </span>
             </div>
-            <div class="phone-shell__pulse">
-              <span />
-            </div>
-            <div class="mini-card mini-card--doctor">
-              <BaseIcon name="doctor" :size="24" />
-              <span>
-                <strong>أطباء حسب الاختصاص</strong>
-                <small>بحث سريع ومباشر</small>
-              </span>
-            </div>
-            <div class="mini-card mini-card--clinic">
-              <BaseIcon name="map-marker-radius" :size="24" />
-              <span>
-                <strong>موقع العيادة</strong>
-                <small>دوام، عنوان، وحجز</small>
-              </span>
+            <div class="hero-search-panel hero-search-panel--phone" aria-label="البحث عن طبيب">
+              <div class="hero-search-panel__head">
+                <span>ابحث عن طبيبك</span>
+                <small>بالاسم أو الاختصاص أو المحافظة</small>
+              </div>
+              <DoctorSearchForm
+                :specializations="specializations ?? []"
+                :provinces="provinces ?? []"
+                submit-label="ابحث عن طبيب"
+                @submit="onSearch"
+              />
             </div>
           </div>
 
@@ -184,18 +179,6 @@ function provinceHref(province: ProvinceItemDto) {
           </div>
         </aside>
 
-        <div class="hero-search-panel" aria-label="البحث عن طبيب">
-          <div class="hero-search-panel__head">
-            <span>ابحث عن طبيبك</span>
-            <small>بالاسم أو الاختصاص أو المحافظة</small>
-          </div>
-          <DoctorSearchForm
-            :specializations="specializations ?? []"
-            :provinces="provinces ?? []"
-            submit-label="ابحث عن طبيب"
-            @submit="onSearch"
-          />
-        </div>
       </div>
     </section>
 
@@ -501,10 +484,8 @@ function provinceHref(province: ProvinceItemDto) {
 }
 
 .hero-search-panel {
-  grid-column: 1 / -1;
-  justify-self: center;
-  width: min(1600px, calc(100vw - 48px));
-  margin-top: 30px;
+  width: 100%;
+  margin-top: 20px;
   padding: clamp(14px, 2vw, 18px);
   border: 1px solid rgba(255, 255, 255, 0.26);
   border-radius: var(--radius-md);
@@ -514,7 +495,21 @@ function provinceHref(province: ProvinceItemDto) {
 }
 
 .hero-search-panel :deep(.search-form) {
-  grid-template-columns: minmax(280px, 1.35fr) repeat(2, minmax(220px, 1fr)) minmax(190px, 0.75fr);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+.hero-search-panel :deep(.search-form__field--grow),
+.hero-search-panel :deep(.search-form > .btn) {
+  grid-column: auto;
+}
+
+.hero-search-panel--phone {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .hero-search-panel__head {
@@ -977,14 +972,6 @@ function provinceHref(province: ProvinceItemDto) {
     padding-inline: clamp(20px, 4vw, 42px);
   }
 
-  .hero-search-panel :deep(.search-form) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .hero-search-panel :deep(.search-form__field--grow),
-  .hero-search-panel :deep(.search-form > .btn) {
-    grid-column: 1 / -1;
-  }
 
   .specialty-rail {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1016,13 +1003,6 @@ function provinceHref(province: ProvinceItemDto) {
     display: none;
   }
 
-  .hero-search-panel {
-    width: calc(100vw - 24px);
-  }
-
-  .hero-search-panel :deep(.search-form) {
-    grid-template-columns: minmax(0, 1fr);
-  }
 
   .feature-grid,
   .specialty-rail,
