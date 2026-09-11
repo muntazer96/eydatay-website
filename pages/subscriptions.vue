@@ -50,12 +50,13 @@ function annualDiscount(item: SubscriptionPackage) {
   return { saving, percent: new Intl.NumberFormat('ar-IQ', { style: 'percent', maximumFractionDigits: 0 }).format(saving / fullYear) }
 }
 const isGold = (item: SubscriptionPackage) => item.normalizedName.toLowerCase() === 'gold'
+const logoSrc = publicAssetUrl('/onWhiteBG.png')
 </script>
 
 <template>
   <main>
     <section class="plans-heading container">
-      <img :src="'/onWhiteBG.png'" alt="شعار عيادتي" width="80" height="80" />
+      <img :src="logoSrc" alt="شعار عيادتي" width="80" height="80" />
       <h1>اشتراكات عيادتي للأطباء</h1>
       <p>قارن المميزات وحدود الاستخدام واختار الاشتراك المناسب لعيادتك.</p>
     </section>

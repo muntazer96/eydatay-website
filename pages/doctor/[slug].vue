@@ -70,7 +70,7 @@ useHead({
     { property: 'og:description', content: doctor.value ? doctorPageDescription(doctor.value) : '' },
     { property: 'og:type', content: 'profile' },
     { property: 'og:url', content: siteUrl(`/doctor/${doctorSlugPath.value}`) },
-    { property: 'og:image', content: doctorCardImage(doctor.value) ?? `${siteUrl()}/onWhiteBG.png` },
+    { property: 'og:image', content: doctorCardImage(doctor.value) ?? siteAssetUrl('/onWhiteBG.png') },
     { property: 'profile:first_name', content: doctor.value?.name ?? '' },
   ],
   link: [{ rel: 'canonical', href: siteUrl(`/doctor/${doctorSlugPath.value}`) }],
@@ -100,7 +100,7 @@ function buildDoctorJsonLd(d: PublicDoctorProfileDto, slugPath: string) {
     '@id': `${siteUrl()}/doctor/${slugPath}#doctor`,
     name: ` ${d.name}`,
     url: siteUrl(`/doctor/${slugPath}`),
-    image: doctorCardImage(d) ?? `${siteUrl()}/onWhiteBG.png`,
+    image: doctorCardImage(d) ?? siteAssetUrl('/onWhiteBG.png'),
     medicalSpecialty: d.specializationName || undefined,
     availableService: d.canBookOnline ? ['online_booking'] : undefined,
   }

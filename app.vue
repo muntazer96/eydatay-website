@@ -4,6 +4,7 @@ useHead({
 })
 
 const loading = ref(true)
+const splashLogoSrc = publicAssetUrl('/onWhiteBG.png')
 let hideTimer: ReturnType<typeof setTimeout> | undefined
 
 onMounted(() => {
@@ -22,7 +23,7 @@ onBeforeUnmount(() => {
     <Transition name="splash-fade">
       <div v-if="loading" class="splash" aria-hidden="true">
         <span class="splash__mark">
-          <img src="/onWhiteBG.png" alt="" width="112" height="112" />
+          <img :src="splashLogoSrc" alt="" width="112" height="112" />
           <span class="splash__ring" />
         </span>
         <span class="splash__name">عيادتي</span>

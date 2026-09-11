@@ -34,13 +34,14 @@ const values = [
   { icon: 'calendar-check', title: 'تنظيم عمل العيادة', desc: 'أدوات الطبيب تجمع المواعيد والدوام وبيانات العيادات لتسهيل متابعة العمل اليومي.' },
   { icon: 'headset', title: 'قناة للملاحظات', desc: 'رسائل التواصل تصل إلى قسم البلاغات لدى الإدارة لمتابعة الاستفسارات والمشكلات.' },
 ]
+const logoSrc = publicAssetUrl('/onWhiteBG.png')
 </script>
 
 <template>
   <main>
     <section class="page-hero">
       <div class="container">
-        <img :src="'/onWhiteBG.png'" class="page-hero__logo" alt="شعار عيادتي" width="112" height="112" />
+        <img :src="logoSrc" class="page-hero__logo" alt="شعار عيادتي" width="112" height="112" />
         <h1 class="page-hero__title">من نحن</h1>
         <p class="page-hero__subtitle">
           عيادتي منصة عراقية أُنشأت لربط المريض بطبيبه بكل سهولة ومصداقية.

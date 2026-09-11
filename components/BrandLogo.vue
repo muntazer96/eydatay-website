@@ -12,7 +12,7 @@ const props = withDefaults(
   },
 )
 
-const logoSrc = computed(() => (props.light ? '/onColorsBG.png' : '/onWhiteBG.png'))
+const logoSrc = computed(() => publicAssetUrl(props.light ? '/onColorsBG.png' : '/onWhiteBG.png'))
 </script>
 
 <template>

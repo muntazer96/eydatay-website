@@ -1,3 +1,6 @@
+const appBaseURL = process.env.NUXT_APP_BASE_URL || '/website/'
+const publicPath = (path: string) => `${appBaseURL.endsWith('/') ? appBaseURL : `${appBaseURL}/`}${path.replace(/^\//, '')}`
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
@@ -14,6 +17,7 @@ export default defineNuxtConfig({
   ],
 
   app: {
+    baseURL: appBaseURL,
     head: {
       htmlAttrs: { lang: 'ar', dir: 'rtl' },
       meta: [
@@ -34,8 +38,8 @@ export default defineNuxtConfig({
         { name: 'twitter:site', content: '@eyadaty' },
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/onWhiteBG.png' },
-        { rel: 'apple-touch-icon', href: '/onWhiteBG.png' },
+        { rel: 'icon', type: 'image/png', href: publicPath('/onWhiteBG.png') },
+        { rel: 'apple-touch-icon', href: publicPath('/onWhiteBG.png') },
         { rel: 'canonical', href: 'https://eyadaty.techumbrella.net/' },
       ],
       style: [],

@@ -15,6 +15,7 @@ const props = withDefaults(
 
 const { androidPlayStoreUrl, iosAppStoreUrl, downloadUrl } = useAppLinks()
 const { trackAppDownloadClick } = useAnalytics()
+const logoSrc = publicAssetUrl('/onColorsBG.png')
 
 const qrTarget = computed(() => androidPlayStoreUrl || downloadUrl(props.doctorId || undefined))
 const qrImg = ref('')
@@ -42,7 +43,7 @@ onMounted(() => {
     <div class="download-section__card">
       <div class="download-section__info">
         <span class="ey-logo-mark">
-          <img src="/onColorsBG.png" alt="شعار عيادتي" width="80" height="80" loading="lazy" />
+          <img :src="logoSrc" alt="شعار عيادتي" width="80" height="80" loading="lazy" />
         </span>
 
         <div class="download-section__text">

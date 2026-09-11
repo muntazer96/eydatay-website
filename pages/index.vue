@@ -13,7 +13,7 @@ useHead({
     { property: 'og:title', content: 'عيادتي | طبيبك أقرب مما تتوقع' },
     { property: 'og:description', content: 'ابحث عن الطبيب المناسب، اعرف الدوام والموقع، واحجز موعدك بسهولة.' },
     { property: 'og:url', content: siteUrl() },
-    { property: 'og:image', content: `${siteUrl()}/onWhiteBG.png` },
+    { property: 'og:image', content: siteAssetUrl('/onWhiteBG.png') },
   ],
   link: [{ rel: 'canonical', href: siteUrl() }],
   script: [
@@ -27,7 +27,7 @@ useHead({
             name: 'عيادتي',
             alternateName: 'Eyaadaty',
             url: siteUrl(),
-            logo: `${siteUrl()}/onWhiteBG.png`,
+            logo: siteAssetUrl('/onWhiteBG.png'),
             sameAs: [],
             description:
               'منصة عراقية تساعد المرضى على اكتشاف الأطباء، معرفة معلومات العيادات، أوقات الدوام، الموقع، التقييمات وحجز المواعيد.',
@@ -62,6 +62,7 @@ const popularProvinces = computed(() => {
     .map((name) => list.find((p) => p.normalizedName === name))
     .filter((p): p is ProvinceItemDto => Boolean(p))
 })
+const logoSrc = publicAssetUrl('/onWhiteBG.png')
 
 const highlights = [
   { icon: 'map-marker-radius', value: 'كل العراق', label: 'محافظات وعيادات واضحة' },
@@ -154,7 +155,7 @@ function provinceHref(province: ProvinceItemDto) {
         <aside class="hero-visual" aria-label="لمحة عن تجربة عيادتي">
           <div class="phone-shell">
             <div class="phone-shell__top">
-              <img src="/onWhiteBG.png" alt="" width="48" height="48" />
+              <img :src="logoSrc" alt="" width="48" height="48" />
               <span>
                 <strong>عيادتي</strong>
                 <small>موعدك أقرب</small>
@@ -190,23 +191,22 @@ function provinceHref(province: ProvinceItemDto) {
       </div>
     </section>
 
-    <section id="features" class="flow-section flow-section--features" aria-labelledby="features-title">
+    <section id="about" class="flow-section flow-section--features" aria-labelledby="about-title">
       <div class="container split-layout">
         <div class="section-head">
-          <span class="section-eyebrow">ليش عيادتي؟</span>
-          <h2 id="features-title" class="section-title">تجربة مرتبة من أول بحث لحد باب العيادة</h2>
-          <p class="section-subtitle">
-            الصفحة تجمع أهم القرارات التي يحتاجها المريض: من هو الطبيب، أين العيادة، متى الدوام، وكيف يبدأ الحجز.
-          </p>
+          <span class="section-eyebrow">من نحن</span>
+          <h2 id="about-title" class="section-title">عيادتي: معلومات للمريض وتنظيم للطبيب</h2>
+          <p class="section-subtitle">منصة عراقية تجمع البحث عن الأطباء ومعلومات العيادات مع أدوات إدارة المواعيد. هدفنا أن يعرف المراجع أين يذهب ومتى، وأن يجد الطبيب معلومات يومه في مكان واحد.</p>
+          <NuxtLink to="/about" class="text-link mt-3">تعرّف على عيادتي <BaseIcon name="arrow-left" :size="18" /></NuxtLink>
         </div>
-
         <div class="feature-grid">
-          <article v-for="benefit in benefits" :key="benefit.title" class="feature-tile">
-            <span class="feature-tile__icon">
-              <BaseIcon :name="benefit.icon" :size="26" />
-            </span>
-            <h3>{{ benefit.title }}</h3>
-            <p>{{ benefit.desc }}</p>
+          <article class="feature-tile">
+            <h3>للمراجع</h3>
+            <p>ابحث بالمحافظة والاختصاص، راجع العنوان والدوام، وتعرّف على طريقة الحجز المتاحة عند الطبيب قبل التواصل.</p>
+          </article>
+          <article class="feature-tile">
+            <h3>للطبيب والعيادة</h3>
+            <p>اعرض معلوماتك وحدّث بيانات عياداتك، ونظّم أوقات الدوام وتابع الحجوزات من أدوات حساب الطبيب.</p>
           </article>
         </div>
       </div>
@@ -268,6 +268,46 @@ function provinceHref(province: ProvinceItemDto) {
       </div>
     </section>
 
+    <section id="doctor-benefits" class="flow-section" aria-labelledby="doctor-benefits-title">
+      <div class="container">
+        <div class="compact-head">
+          <div>
+            <span class="section-eyebrow">مميزات الأطباء</span>
+            <h2 id="doctor-benefits-title" class="section-title">شنو يضيف عيادتي ليومك بالعيادة؟</h2>
+          </div>
+          <NuxtLink to="/for-doctors" class="text-link">المميزات وخطوات البدء <BaseIcon name="arrow-left" :size="18" /></NuxtLink>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="calendar-check" :size="26" /></span><h3>مواعيدك بحالات واضحة</h3><p>تابع طلبات الحجز والمواعيد القادمة، وسجّل اكتمال الزيارة أو رفض الطلب المعلّق من حساب الطبيب.</p></article>
+          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="clock-outline" :size="26" /></span><h3>دوام مناسب لكل عيادة</h3><p>حدّد جدول الدوام الأسبوعي وعدّل يوماً محدداً، مع إدارة استثناءات الدوام والعطل.</p></article>
+          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="account-plus" :size="26" /></span><h3>الحجوزات الهاتفية أيضاً</h3><p>أضف الموعد يدوياً للحجوزات التي تصل للعيادة خارج الحجز الإلكتروني، لتتابعها ضمن قائمة المواعيد.</p></article>
+          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="chart-bar" :size="26" /></span><h3>متابعة نشاط الحجوزات</h3><p>راجع إحصائيات المواعيد والحجز القادم، إلى جانب ملفك العام وروابطك ومعلومات التواصل مع عياداتك.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="flow-section flow-section--features" aria-labelledby="features-title">
+      <div class="container split-layout">
+        <div class="section-head">
+          <span class="section-eyebrow">ليش عيادتي؟</span>
+          <h2 id="features-title" class="section-title">تجربة مرتبة من أول بحث لحد باب العيادة</h2>
+          <p class="section-subtitle">
+            الصفحة تجمع أهم القرارات التي يحتاجها المريض: من هو الطبيب، أين العيادة، متى الدوام، وكيف يبدأ الحجز.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article v-for="benefit in benefits" :key="benefit.title" class="feature-tile">
+            <span class="feature-tile__icon">
+              <BaseIcon :name="benefit.icon" :size="26" />
+            </span>
+            <h3>{{ benefit.title }}</h3>
+            <p>{{ benefit.desc }}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section id="how-it-works" class="flow-section" aria-labelledby="how-title">
       <div class="container">
         <div class="compact-head compact-head--center">
@@ -287,45 +327,6 @@ function provinceHref(province: ProvinceItemDto) {
             <p>{{ step.desc }}</p>
           </li>
         </ol>
-      </div>
-    </section>
-
-    <section id="about" class="flow-section flow-section--features" aria-labelledby="about-title">
-      <div class="container split-layout">
-        <div class="section-head">
-          <span class="section-eyebrow">من نحن</span>
-          <h2 id="about-title" class="section-title">عيادتي: معلومات للمريض وتنظيم للطبيب</h2>
-          <p class="section-subtitle">منصة عراقية تجمع البحث عن الأطباء ومعلومات العيادات مع أدوات إدارة المواعيد. هدفنا أن يعرف المراجع أين يذهب ومتى، وأن يجد الطبيب معلومات يومه في مكان واحد.</p>
-          <NuxtLink to="/about" class="text-link mt-3">تعرّف على عيادتي <BaseIcon name="arrow-left" :size="18" /></NuxtLink>
-        </div>
-        <div class="feature-grid">
-          <article class="feature-tile">
-            <h3>للمراجع</h3>
-            <p>ابحث بالمحافظة والاختصاص، راجع العنوان والدوام، وتعرّف على طريقة الحجز المتاحة عند الطبيب قبل التواصل.</p>
-          </article>
-          <article class="feature-tile">
-            <h3>للطبيب والعيادة</h3>
-            <p>اعرض معلوماتك وحدّث بيانات عياداتك، ونظّم أوقات الدوام وتابع الحجوزات من أدوات حساب الطبيب.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="doctor-benefits" class="flow-section" aria-labelledby="doctor-benefits-title">
-      <div class="container">
-        <div class="compact-head">
-          <div>
-            <span class="section-eyebrow">للأطباء</span>
-            <h2 id="doctor-benefits-title" class="section-title">شنو يضيف عيادتي ليومك بالعيادة؟</h2>
-          </div>
-          <NuxtLink to="/for-doctors" class="text-link">المميزات وخطوات البدء <BaseIcon name="arrow-left" :size="18" /></NuxtLink>
-        </div>
-        <div class="feature-grid">
-          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="calendar-check" :size="26" /></span><h3>مواعيدك بحالات واضحة</h3><p>تابع طلبات الحجز والمواعيد القادمة، وسجّل اكتمال الزيارة أو رفض الطلب المعلّق من حساب الطبيب.</p></article>
-          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="clock-outline" :size="26" /></span><h3>دوام مناسب لكل عيادة</h3><p>حدّد جدول الدوام الأسبوعي وعدّل يوماً محدداً، مع إدارة استثناءات الدوام والعطل.</p></article>
-          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="account-plus" :size="26" /></span><h3>الحجوزات الهاتفية أيضاً</h3><p>أضف الموعد يدوياً للحجوزات التي تصل للعيادة خارج الحجز الإلكتروني، لتتابعها ضمن قائمة المواعيد.</p></article>
-          <article class="feature-tile"><span class="feature-tile__icon"><BaseIcon name="chart-bar" :size="26" /></span><h3>متابعة نشاط الحجوزات</h3><p>راجع إحصائيات المواعيد والحجز القادم، إلى جانب ملفك العام وروابطك ومعلومات التواصل مع عياداتك.</p></article>
-        </div>
       </div>
     </section>
 

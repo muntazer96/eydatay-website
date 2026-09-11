@@ -71,6 +71,7 @@ const steps = [
   { icon: 'hospital-building', title: 'رتّب بيانات العيادة', desc: 'بعد تفعيل حسابك، راجع العنوان ووسائل التواصل وأوقات الدوام وطريقة استقبال الحجوزات.' },
   { icon: 'check-decagram', title: 'ابدأ متابعة المواعيد', desc: 'راجع ملفك العام وتابع قائمة الحجوزات، وحدّث الدوام عند أي تغيير.' },
 ]
+const logoSrc = publicAssetUrl('/onWhiteBG.png')
 </script>
 
 <template>
@@ -78,7 +79,7 @@ const steps = [
     <!-- Hero -->
     <section class="page-hero">
       <div class="container">
-        <img :src="'/onWhiteBG.png'" class="page-hero__logo" alt="شعار عيادتي" width="112" height="112" />
+        <img :src="logoSrc" class="page-hero__logo" alt="شعار عيادتي" width="112" height="112" />
         <h1 class="page-hero__title">مميزات عيادتي للأطباء</h1>
         <p class="page-hero__subtitle">
           من ملفك الطبي والحجوزات إلى شاشة الانتظار والحجز الذاتي: أدوات لتنظيم يوم العيادة والتواصل مع المراجعين.

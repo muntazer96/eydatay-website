@@ -1,21 +1,79 @@
 <script setup lang="ts">
 const route = useRoute()
 const mobileOpen = ref(false)
+const activeHomeSection = ref('home')
+let sectionObserver: IntersectionObserver | undefined
 
 const navItems = [
-  { label: 'الرئيسية', to: '/' },
-  { label: 'من نحن', to: '/#about' },
-  { label: 'التخصصات', to: '/#specializations' },
-  { label: 'المحافظات', to: '/#governorates' },
-  { label: 'للأطباء', to: '/#doctor-benefits' },
+  { label: 'الرئيسية', to: '/', sectionId: 'home' },
+  { label: 'من نحن', to: '/#about', sectionId: 'about' },
+  { label: 'التخصصات', to: '/#specializations', sectionId: 'specializations' },
+  { label: 'المحافظات', to: '/#governorates', sectionId: 'governorates' },
+  { label: 'مميزات الأطباء', to: '/#doctor-benefits', sectionId: 'doctor-benefits' },
   { label: 'الاشتراكات', to: '/subscriptions' },
   { label: 'الأطباء', to: '/doctors' },
-  { label: 'الدعم', to: '/contact' },
+  { label: 'تواصل معنا', to: '/contact' },
 ]
 
-function isActive(item: { to: string }): boolean {
-  if (item.to === '/') return route.path === '/' && !route.hash
-  if (item.to.startsWith('/#')) return route.path === '/' && route.hash === item.to.slice(1)
+const homeSectionIds = navItems.map((item) => item.sectionId).filter((id): id is string => Boolean(id))
+
+function syncActiveSection() {
+  if (route.path !== '/' || typeof window === 'undefined') return
+
+  const offset = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 72
+  const probe = offset + Math.max(80, window.innerHeight * 0.22)
+  const current =
+    [...homeSectionIds]
+      .reverse()
+      .find((id) => {
+        const section = document.getElementById(id)
+        return section ? section.getBoundingClientRect().top <= probe : false
+      }) ?? 'home'
+
+  activeHomeSection.value = current
+}
+
+function setupSectionObserver() {
+  sectionObserver?.disconnect()
+  sectionObserver = undefined
+  if (typeof window !== 'undefined') window.removeEventListener('scroll', syncActiveSection)
+
+  if (route.path !== '/' || typeof window === 'undefined') return
+
+  if (!('IntersectionObserver' in window)) {
+    window.addEventListener('scroll', syncActiveSection, { passive: true })
+    syncActiveSection()
+    return
+  }
+
+  sectionObserver = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top))[0]
+
+      if (visible?.target.id) {
+        activeHomeSection.value = visible.target.id
+      } else {
+        syncActiveSection()
+      }
+    },
+    {
+      rootMargin: '-24% 0px -58% 0px',
+      threshold: [0, 0.1, 0.4],
+    },
+  )
+
+  homeSectionIds.forEach((id) => {
+    const section = document.getElementById(id)
+    if (section) sectionObserver?.observe(section)
+  })
+
+  syncActiveSection()
+}
+
+function isActive(item: { to: string; sectionId?: string }): boolean {
+  if (route.path === '/' && item.sectionId) return activeHomeSection.value === item.sectionId
   return route.path === item.to || route.path.startsWith(`${item.to}/`)
 }
 
@@ -24,6 +82,26 @@ function closeMobile() {
 }
 
 watch(() => route.fullPath, closeMobile)
+
+watch(
+  () => route.fullPath,
+  async () => {
+    if (route.path === '/' && route.hash) activeHomeSection.value = route.hash.slice(1)
+    await nextTick()
+    setupSectionObserver()
+  },
+)
+
+onMounted(async () => {
+  await nextTick()
+  if (route.path === '/' && route.hash) activeHomeSection.value = route.hash.slice(1)
+  setupSectionObserver()
+})
+
+onBeforeUnmount(() => {
+  sectionObserver?.disconnect()
+  if (typeof window !== 'undefined') window.removeEventListener('scroll', syncActiveSection)
+})
 
 function trackNavCta() {
   useAnalytics().trackAppDownloadClick()

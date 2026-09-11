@@ -27,6 +27,19 @@ export function siteUrl(path = ''): string {
   return `${base}${clean}`
 }
 
+/** Public asset URL that respects Nuxt app.baseURL, e.g. /website/. */
+export function publicAssetUrl(path: string): string {
+  const baseURL = useRuntimeConfig().app.baseURL || '/'
+  const base = baseURL.endsWith('/') ? baseURL : `${baseURL}/`
+  const clean = path.startsWith('/') ? path.slice(1) : path
+  return `${base}${clean}`
+}
+
+/** Absolute public asset URL for SEO metadata. */
+export function siteAssetUrl(path: string): string {
+  return siteUrl(path)
+}
+
 async function apiGet<T>(path: string, opts?: Record<string, unknown>): Promise<T> {
   const res = (await $fetch(path, {
     baseURL: apiBase(),
