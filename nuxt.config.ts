@@ -1,5 +1,6 @@
 const appBaseURL = process.env.NUXT_APP_BASE_URL || '/website/'
 const publicPath = (path: string) => `${appBaseURL.endsWith('/') ? appBaseURL : `${appBaseURL}/`}${path.replace(/^\//, '')}`
+const googleSiteVerification = process.env.NUXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim()
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
@@ -32,6 +33,9 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#13796b' },
         { name: 'format-detection', content: 'telephone=no' },
         { name: 'robots', content: 'index, follow, max-snippet:-1, max-image-preview:large' },
+        ...(googleSiteVerification
+          ? [{ name: 'google-site-verification', content: googleSiteVerification }]
+          : []),
         {
           name: 'description',
           content:
@@ -61,6 +65,7 @@ export default defineNuxtConfig({
       androidPlayStoreUrl: process.env.NUXT_PUBLIC_ANDROID_PLAY_STORE_URL || 'https://play.google.com/store/apps/details?id=com.clinicbooking.clinic_app',
       iosAppStoreUrl: process.env.NUXT_PUBLIC_IOS_APP_STORE_URL || '',
       androidPackage: 'com.clinicbooking.clinic_app',
+      googleSiteVerification: googleSiteVerification || '',
     },
     contactHoneypotAgeMs: 4000,
   },

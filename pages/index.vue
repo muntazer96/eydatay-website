@@ -3,7 +3,7 @@ import type { ProvinceItemDto, SpecializationDto } from '~/types'
 import { provinceSlug, specializationSlug } from '~/utils/slug'
 
 useHead({
-  title: 'عيادتي | ابحث واحجز طبيبك في العراق',
+  title: 'ابحث واحجز طبيبك في العراق',
   meta: [
     {
       name: 'description',

@@ -84,7 +84,7 @@ const totalPages = computed(() => {
 })
 
 useHead({
-  title: 'أطباء في العراق | عيادتي',
+  title: 'أطباء في العراق',
   meta: [
     {
       name: 'description',

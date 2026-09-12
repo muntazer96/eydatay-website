@@ -1,11 +1,14 @@
 export default defineEventHandler((event) => {
-  const site = String(useRuntimeConfig().public.siteUrl || 'https://eyadaty.techumbrella.net').replace(/\/$/, '')
+  const config = useRuntimeConfig()
+  const origin = String(config.public.siteUrl || 'https://eyadaty.techumbrella.net').replace(/\/+$/, '')
+  const appBase = String(config.app.baseURL || '/')
+  const basePath = appBase === '/' ? '' : `/${appBase.replace(/^\/+|\/+$/g, '')}`
+  const site = basePath && !origin.endsWith(basePath) ? `${origin}${basePath}` : origin
 
   const body = [
     'User-agent: *',
     'Allow: /',
     'Disallow: /api/',
-    'Disallow: /_nuxt/',
     `Sitemap: ${site}/sitemap.xml`,
     '',
   ].join('\n')
