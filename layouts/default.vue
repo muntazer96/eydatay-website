@@ -1,6 +1,7 @@
 <template>
   <div class="site">
     <AppHeader />
+    <MedicalBackdrop />
     <NuxtPage />
     <AppFooter />
   </div>
