@@ -125,6 +125,7 @@ export async function submitAnalytics(payload: {
   page?: string
   province?: string
   searchText?: string
+  sessionId?: string
 }): Promise<void> {
   try {
     await $fetch('/Analytics/track', {
