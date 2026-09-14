@@ -176,8 +176,18 @@ function doctorCardImage(d: PublicDoctorProfileDto | null): string | undefined {
 }
 
 // ── Analytics ──
+const profileSource = computed(() => {
+  const source = String(route.query.source ?? "").trim();
+  return source || "direct";
+});
+
 onMounted(() => {
-  if (doctor.value) useAnalytics().trackDoctorView(doctor.value.id);
+  if (doctor.value)
+    useAnalytics().trackDoctorView(doctor.value.id, {
+      source: profileSource.value,
+      specializationId: doctor.value.specializationId,
+      province: primaryClinic.value?.iraqiProvinceName ?? undefined,
+    });
 });
 
 function handleBook() {

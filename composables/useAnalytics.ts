@@ -54,6 +54,9 @@ export function useAnalytics() {
     trackDoctorView(doctorId: number, opts: AnalyticsTrackOptions = {}) {
       track('doctor_profile_viewed', { ...opts, doctorId })
     },
+    trackDoctorShownInSearch(doctorId: number, opts: AnalyticsTrackOptions = {}) {
+      track('doctor_shown_in_search', { ...opts, doctorId, source: opts.source ?? 'search' })
+    },
     trackSpecializationSearch(specializationId: number, opts: AnalyticsTrackOptions = {}) {
       track('specialization_search', { ...opts, specializationId })
     },
