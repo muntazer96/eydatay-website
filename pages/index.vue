@@ -123,11 +123,6 @@ function provinceHref(province: ProvinceItemDto) {
         <span class="motion-field__line motion-field__line--two" />
         <span class="motion-field__wave motion-field__wave--one" />
         <span class="motion-field__wave motion-field__wave--two" />
-        <span class="hero-medical-icon hero-medical-icon--tooth"><BaseIcon name="tooth-outline" :size="44" /></span>
-        <span class="hero-medical-icon hero-medical-icon--heart"><BaseIcon name="heart-pulse" :size="50" /></span>
-        <span class="hero-medical-icon hero-medical-icon--bone"><BaseIcon name="bone" :size="42" /></span>
-        <span class="hero-medical-icon hero-medical-icon--doctor"><BaseIcon name="doctor" :size="46" /></span>
-        <span class="hero-medical-icon hero-medical-icon--pill"><BaseIcon name="pill" :size="34" /></span>
       </div>
 
       <div class="container hero-stage__inner">
@@ -449,62 +444,6 @@ function provinceHref(province: ProvinceItemDto) {
   bottom: 10%;
   inset-inline-end: 14%;
   animation-delay: -3s;
-}
-
-.hero-medical-icon {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  width: 82px;
-  height: 82px;
-  border: 1px solid rgba(167, 255, 241, 0.16);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.055);
-  color: rgba(176, 255, 243, 0.28);
-  box-shadow: inset 0 0 28px rgba(116, 231, 214, 0.045);
-  backdrop-filter: blur(2px);
-  animation: heroMedicalFloat var(--icon-duration, 11s) ease-in-out var(--icon-delay, 0s) infinite;
-}
-
-.hero-medical-icon--tooth {
-  top: 10%;
-  inset-inline-start: 3%;
-  --icon-duration: 12s;
-  --icon-delay: -2s;
-}
-
-.hero-medical-icon--heart {
-  top: 17%;
-  inset-inline-end: 4%;
-  width: 94px;
-  height: 94px;
-  --icon-duration: 10s;
-  --icon-delay: -6s;
-}
-
-.hero-medical-icon--bone {
-  bottom: 11%;
-  inset-inline-start: 7%;
-  --icon-duration: 13s;
-  --icon-delay: -8s;
-}
-
-.hero-medical-icon--doctor {
-  bottom: 8%;
-  inset-inline-end: 32%;
-  width: 88px;
-  height: 88px;
-  --icon-duration: 14s;
-  --icon-delay: -4s;
-}
-
-.hero-medical-icon--pill {
-  top: 48%;
-  inset-inline-start: 42%;
-  width: 62px;
-  height: 62px;
-  --icon-duration: 9s;
-  --icon-delay: -5s;
 }
 
 .hero-stage__inner {
@@ -1009,15 +948,6 @@ function provinceHref(province: ProvinceItemDto) {
   }
 }
 
-@keyframes heroMedicalFloat {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) rotate(-4deg);
-  }
-  50% {
-    transform: translate3d(9px, -22px, 0) rotate(5deg);
-  }
-}
-
 @media (max-width: 1080px) {
   .hero-stage__inner,
   .split-layout,
@@ -1075,18 +1005,6 @@ function provinceHref(province: ProvinceItemDto) {
   }
 
   .hero-visual {
-    display: none;
-  }
-
-  .hero-medical-icon {
-    width: 62px;
-    height: 62px;
-    border-radius: 20px;
-    opacity: 0.78;
-  }
-
-  .hero-medical-icon--doctor,
-  .hero-medical-icon--pill {
     display: none;
   }
 
