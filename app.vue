@@ -5,13 +5,21 @@ useHead({
 
 const loading = ref(true)
 const splashLogoSrc = publicAssetUrl('/onWhiteBG.png')
+const route = useRoute()
+const { trackWebsiteVisit } = useAnalytics()
 let hideTimer: ReturnType<typeof setTimeout> | undefined
 
 onMounted(() => {
+  trackWebsiteVisit()
   hideTimer = setTimeout(() => {
     loading.value = false
   }, 400)
 })
+
+watch(
+  () => route.fullPath,
+  () => trackWebsiteVisit(),
+)
 
 onBeforeUnmount(() => {
   if (hideTimer) clearTimeout(hideTimer)

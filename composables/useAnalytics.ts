@@ -1,6 +1,13 @@
 import { submitAnalytics } from '~/utils/api'
 
 let sessionId: string | null = null
+const VISIT_KEY = 'eyadaty_website_visit'
+const VISIT_TIMEOUT_MS = 30 * 60 * 1000
+
+interface StoredWebsiteVisit {
+  sessionId: string
+  expiresAt: number
+}
 
 function getSessionId(): string {
   if (sessionId) return sessionId
@@ -48,6 +55,31 @@ export function useAnalytics() {
 
   return {
     track,
+    trackWebsiteVisit() {
+      if (import.meta.server) return
+
+      const now = Date.now()
+      const currentVisit = readWebsiteVisit()
+
+      if (currentVisit && currentVisit.expiresAt > now) {
+        saveWebsiteVisit({ ...currentVisit, expiresAt: now + VISIT_TIMEOUT_MS })
+        return
+      }
+
+      const newVisit = {
+        sessionId: getSessionId(),
+        expiresAt: now + VISIT_TIMEOUT_MS,
+      }
+      saveWebsiteVisit(newVisit)
+
+      void submitAnalytics({
+        eventType: 'website_visit',
+        page: route.path,
+        platform: 'website',
+        source: 'website',
+        sessionId: newVisit.sessionId,
+      })
+    },
     trackDoctorSearch(opts: AnalyticsTrackOptions = {}) {
       track('doctor_search_performed', opts)
     },
@@ -79,6 +111,23 @@ export function useAnalytics() {
       track('app_download_click')
     },
   }
+}
+
+function readWebsiteVisit(): StoredWebsiteVisit | null {
+  const raw = window.localStorage.getItem(VISIT_KEY)
+  if (!raw) return null
+
+  try {
+    const parsed = JSON.parse(raw) as Partial<StoredWebsiteVisit>
+    if (!parsed.sessionId || typeof parsed.expiresAt !== 'number') return null
+    return { sessionId: parsed.sessionId, expiresAt: parsed.expiresAt }
+  } catch {
+    return null
+  }
+}
+
+function saveWebsiteVisit(visit: StoredWebsiteVisit) {
+  window.localStorage.setItem(VISIT_KEY, JSON.stringify(visit))
 }
 
 export { getSessionId }

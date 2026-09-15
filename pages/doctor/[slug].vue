@@ -3,6 +3,7 @@ import type {
   DoctorExternalLinkDto,
   PageResult,
   PublicClinicAvailabilityDto,
+  PublicDoctorClinicDto,
   PublicDoctorProfileDto,
   ReviewDto,
 } from "~/types";
@@ -147,7 +148,8 @@ function buildDoctorJsonLd(d: PublicDoctorProfileDto, slugPath: string) {
       name: c.name,
       telephone: c.phoneNumber ?? undefined,
     };
-    if (c.mapUrl) node.url = c.mapUrl;
+    const mapUrl = normalizeMapUrl(c.mapUrl);
+    if (mapUrl) node.url = mapUrl;
     if (typeof c.latitude === "number" && typeof c.longitude === "number") {
       node.geo = {
         "@type": "GeoCoordinates",
@@ -261,6 +263,30 @@ function groupSchedule(availabilities: PublicClinicAvailabilityDto[]) {
 
 const externalLinkPrefix = (value: string) =>
   value.startsWith("http") ? value : `https://${value}`;
+
+function normalizeMapUrl(value: string | null): string | null {
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+
+  const markdownLink = trimmed.match(/^\[[^\]]+\]\((https?:\/\/[^)\s]+)\)$/i);
+  const rawUrl = markdownLink?.[1] ?? trimmed;
+  const href = /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
+
+  try {
+    const url = new URL(href);
+    return ["http:", "https:"].includes(url.protocol) ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+function clinicMapHref(clinic: PublicDoctorClinicDto): string | null {
+  if (clinic.latitude != null && clinic.longitude != null) {
+    return `https://www.google.com/maps/search/?api=1&query=${clinic.latitude},${clinic.longitude}`;
+  }
+
+  return normalizeMapUrl(clinic.mapUrl);
+}
 
 const isWhatsApp = (link: DoctorExternalLinkDto) =>
   link.type === DoctorExternalLinkType.WhatsApp;
@@ -488,8 +514,8 @@ const isWhatsApp = (link: DoctorExternalLinkDto) =>
                       اتصل
                     </a>
                     <a
-                      v-if="clinic.latitude != null && clinic.longitude != null"
-                      :href="`https://www.google.com/maps/search/?api=1&query=${clinic.latitude},${clinic.longitude}`"
+                      v-if="clinicMapHref(clinic)"
+                      :href="clinicMapHref(clinic)!"
                       target="_blank"
                       rel="noopener"
                       class="btn btn--ghost btn--sm"
