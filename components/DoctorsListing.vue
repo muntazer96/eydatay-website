@@ -70,6 +70,30 @@ const { data: doctorsData, pending, refresh, error } = await useAsyncData<PageRe
   { watch: [effectiveFilters], default: () => null },
 )
 
+const analytics = useAnalytics()
+const trackedImpressions = new Set<string>()
+
+function trackVisibleDoctors() {
+  if (import.meta.server) return
+  const items = doctorsData.value?.items ?? []
+  for (const doctor of items) {
+    const key = `${route.fullPath}:${doctor.id}`
+    if (trackedImpressions.has(key)) continue
+    trackedImpressions.add(key)
+    analytics.trackDoctorShownInSearch(doctor.id, {
+      specializationId: doctor.specializationId,
+      province: doctor.clinics[0]?.iraqiProvinceName,
+      searchText: name.value || undefined,
+    })
+  }
+}
+
+onMounted(trackVisibleDoctors)
+watch(
+  () => doctorsData.value?.items.map((doctor) => doctor.id).join(',') ?? '',
+  () => trackVisibleDoctors(),
+)
+
 const totalPages = computed(() => {
   const total = doctorsData.value?.totalItems ?? 0
   return Math.max(1, Math.ceil(total / pageSize))
@@ -88,13 +112,18 @@ function onSubmit(payload: { name: string; specialization: number | null; provin
   useAnalytics().trackDoctorSearch({
     searchText: payload.name || undefined,
     specializationId: payload.specialization ?? undefined,
-    province: payload.province != null ? String(payload.province) : undefined,
+    province: provinceName(payload.province),
   })
   name.value = payload.name
   userSpec.value = payload.specialization != null ? String(payload.specialization) : ''
   userProvince.value = payload.province != null ? String(payload.province) : ''
   page.value = 1
   router.push({ path: route.path, query: buildQuery() })
+}
+
+function provinceName(provinceId: number | null) {
+  if (provinceId == null) return undefined
+  return provinces.value?.find((item) => item.id === provinceId)?.name ?? String(provinceId)
 }
 
 function changePage(newPage: number) {

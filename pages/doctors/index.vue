@@ -40,10 +40,16 @@ function applyFilters() {
   useAnalytics().trackDoctorSearch({
     searchText: name.value || undefined,
     specializationId: specialization.value === '' ? undefined : Number(specialization.value),
-    province: province.value === '' ? undefined : String(province.value),
+    province: selectedProvinceName(),
   })
   page.value = 1
   router.push({ path: '/doctors', query: buildQuery() })
+}
+
+function selectedProvinceName() {
+  if (province.value === '') return undefined
+  const selectedId = Number(province.value)
+  return provinces.value?.find((item) => item.id === selectedId)?.name ?? String(province.value)
 }
 
 function changePage(newPage: number) {
@@ -76,6 +82,30 @@ const { data: doctorsData, pending, refresh: refreshDoctors, error: doctorsError
   'doctors-list',
   () => searchDoctors(searchParams.value),
   { watch: [searchParams] },
+)
+
+const analytics = useAnalytics()
+const trackedImpressions = new Set<string>()
+
+function trackVisibleDoctors() {
+  if (import.meta.server) return
+  const items = doctorsData.value?.items ?? []
+  for (const doctor of items) {
+    const key = `${route.fullPath}:${doctor.id}`
+    if (trackedImpressions.has(key)) continue
+    trackedImpressions.add(key)
+    analytics.trackDoctorShownInSearch(doctor.id, {
+      specializationId: doctor.specializationId,
+      province: doctor.clinics[0]?.iraqiProvinceName,
+      searchText: name.value || undefined,
+    })
+  }
+}
+
+onMounted(trackVisibleDoctors)
+watch(
+  () => doctorsData.value?.items.map((doctor) => doctor.id).join(',') ?? '',
+  () => trackVisibleDoctors(),
 )
 
 const totalPages = computed(() => {

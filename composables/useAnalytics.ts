@@ -42,16 +42,20 @@ export function useAnalytics() {
       page: route.path,
       platform: 'website',
       source: opts.source ?? 'website',
+      sessionId: getSessionId(),
     })
   }
 
   return {
     track,
     trackDoctorSearch(opts: AnalyticsTrackOptions = {}) {
-      track('doctor_search', opts)
+      track('doctor_search_performed', opts)
     },
     trackDoctorView(doctorId: number, opts: AnalyticsTrackOptions = {}) {
-      track('doctor_profile_view', { ...opts, doctorId })
+      track('doctor_profile_viewed', { ...opts, doctorId })
+    },
+    trackDoctorShownInSearch(doctorId: number, opts: AnalyticsTrackOptions = {}) {
+      track('doctor_shown_in_search', { ...opts, doctorId, source: opts.source ?? 'search' })
     },
     trackSpecializationSearch(specializationId: number, opts: AnalyticsTrackOptions = {}) {
       track('specialization_search', { ...opts, specializationId })
@@ -60,13 +64,13 @@ export function useAnalytics() {
       track('governorate_search', { ...opts, province })
     },
     trackBookingClick(doctorId: number, clinicId?: number) {
-      track('booking_cta_click', { doctorId, clinicId })
+      track('doctor_booking_clicked', { doctorId, clinicId })
     },
     trackPhoneClick(doctorId: number, clinicId?: number) {
-      track('phone_contact_click', { doctorId, clinicId })
+      track('doctor_call_clicked', { doctorId, clinicId })
     },
     trackMapClick(doctorId: number, clinicId?: number) {
-      track('map_click', { doctorId, clinicId })
+      track('doctor_map_clicked', { doctorId, clinicId })
     },
     trackDoctorRegistrationClick() {
       track('doctor_registration_click')

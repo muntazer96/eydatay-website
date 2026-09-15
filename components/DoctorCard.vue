@@ -3,18 +3,17 @@ import type { PublicDoctorListDto } from '~/types'
 import { doctorPlaceholderUrl, publicDoctorImageUrl } from '~/utils/api'
 import { doctorSlug, formatPrice } from '~/utils/slug'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   doctor: PublicDoctorListDto
-}>()
+  source?: string
+}>(), {
+  source: 'search',
+})
 
 const imageSrc = computed(() => publicDoctorImageUrl(props.doctor.imageName) || doctorPlaceholderUrl())
-const href = computed(() => `/doctor/${doctorSlug(props.doctor.id, props.doctor.normalizedName)}`)
+const href = computed(() => `/doctor/${doctorSlug(props.doctor.id, props.doctor.normalizedName)}?source=${encodeURIComponent(props.source)}`)
 const primaryClinic = computed(() => props.doctor.clinics[0] ?? null)
 const governorateName = computed(() => props.doctor.clinics[0]?.iraqiProvinceName ?? '')
-
-function trackView() {
-  useAnalytics().trackDoctorView(props.doctor.id)
-}
 </script>
 
 <template>
@@ -23,7 +22,6 @@ function trackView() {
       :to="href"
       class="doctor-card__link"
       :aria-label="`عرض الملف الشخصي للدكتور ${doctor.name}`"
-      @click="trackView"
     >
       <div class="doctor-card__media">
         <img

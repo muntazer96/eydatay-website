@@ -92,13 +92,18 @@ function onSearch(payload: { name: string; specialization: number | null; provin
   trackDoctorSearch({
     searchText: payload.name || undefined,
     specializationId: payload.specialization ?? undefined,
-    province: payload.province != null ? String(payload.province) : undefined,
+    province: provinceName(payload.province),
   })
   const query: Record<string, string> = {}
   if (payload.name) query.name = payload.name
   if (payload.specialization != null) query.specialization = String(payload.specialization)
   if (payload.province != null) query.province = String(payload.province)
   navigateTo({ path: '/doctors', query })
+}
+
+function provinceName(provinceId: number | null) {
+  if (provinceId == null) return undefined
+  return provinces.value?.find((item) => item.id === provinceId)?.name ?? String(provinceId)
 }
 
 function specHref(spec: SpecializationDto) {
